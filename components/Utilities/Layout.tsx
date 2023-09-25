@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import Footer from "@/components/Utilities/Footer";
+import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 
 const navigation = [
   { name: "Home", href: "/#home" },
@@ -24,12 +25,35 @@ interface Props {
 }
 
 export default function Layout({ children }: Props) {
-  const router = useRouter();
-  useAccount({
-    onConnect() {
-      router.push("/home");
+  const [token, setToken] = useState("");
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      setToken(codeResponse.access_token);
+      localStorage.setItem("token", codeResponse.access_token);
+      console.log(codeResponse.access_token);
     },
+    onError: (error) => console.log("Login Failed:", error),
   });
+
+  const logOut = () => {
+    googleLogout();
+    setToken("");
+    localStorage.removeItem("token");
+  };
+  const router = useRouter();
+  const { address } = useAccount();
+  // useAccount({
+  //   onConnect() {
+  //     router.push("/home");
+  //   },
+  // });
+
+  useEffect(() => {
+    if (token && address) {
+      router.push("/home");
+    }
+  }, [token, address]);
 
   return (
     <>
@@ -54,10 +78,10 @@ export default function Layout({ children }: Props) {
                           height={512}
                           width={512}
                           src="/logos/logo.png"
-                          alt="Electra"
+                          alt="Revnu"
                         />
                         <div className="font-black text-white text-3xl tracking-wide">
-                          Electra
+                          Revnu
                           <div className="font-medium text-zinc-400 text-xs">
                             By BlitzCraft
                           </div>
@@ -84,6 +108,21 @@ export default function Layout({ children }: Props) {
                     </div>
                     <div>
                       <ConnectButton />
+                      {token ? (
+                        <button
+                          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          onClick={logOut}
+                        >
+                          Log out
+                        </button>
+                      ) : (
+                        <button
+                          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          onClick={() => login()}
+                        >
+                          Sign in with Google 🚀{" "}
+                        </button>
+                      )}
                       {/* {isDisconnected && (
                         <div>
                           {openConnectModal && (

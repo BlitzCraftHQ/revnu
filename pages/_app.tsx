@@ -7,31 +7,32 @@ import {
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import "@rainbow-me/rainbowkit/styles.css";
 import "@/styles/globals.css";
 import "@/styles/index.scss";
 
-const AltheaEVM = {
-  id: 417834,
-  name: "AltheaEVM DevNet",
-  network: "AltheaEVM DevNet",
-  iconUrl:
-    "https://cdn.dorahacks.io/static/files/188c028468557368d12717c46b1bd63e.jpg",
-  iconBackground: "#fff",
-  nativeCurrency: {
-    decimals: 18,
-    name: "AltheaEVM GAS",
-    symbol: "GAS",
-  },
-  rpcUrls: {
-    public: { http: ["https://althea.zone:8545/"] },
-    default: { http: ["https://althea.zone:8545/"] },
-  },
-  blockExplorers: {
-    default: { name: "AltheaTrace", url: "https://evm.ngd.network/" },
-  },
-  testnet: false,
-};
+// const AltheaEVM = {
+//   id: 417834,
+//   name: "AltheaEVM DevNet",
+//   network: "AltheaEVM DevNet",
+//   iconUrl:
+//     "https://cdn.dorahacks.io/static/files/188c028468557368d12717c46b1bd63e.jpg",
+//   iconBackground: "#fff",
+//   nativeCurrency: {
+//     decimals: 18,
+//     name: "AltheaEVM GAS",
+//     symbol: "GAS",
+//   },
+//   rpcUrls: {
+//     public: { http: ["https://althea.zone:8545/"] },
+//     default: { http: ["https://althea.zone:8545/"] },
+//   },
+//   blockExplorers: {
+//     default: { name: "AltheaTrace", url: "https://evm.ngd.network/" },
+//   },
+//   testnet: false,
+// };
 const MumbaiEVM = {
   id: 80001,
   name: "Mumbai",
@@ -58,7 +59,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [ready, setReady] = useState(false);
 
   const { publicClient, chains } = configureChains(
-    [AltheaEVM, MumbaiEVM],
+    [MumbaiEVM],
     [publicProvider()]
   );
 
@@ -81,20 +82,22 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       {ready ? (
-        <WagmiConfig config={wagmiConfig}>
-          <RainbowKitProvider
-            chains={chains}
-            theme={lightTheme({
-              accentColor: "#10b981",
-              accentColorForeground: "white",
-              borderRadius: "medium",
-              fontStack: "system",
-              overlayBlur: "small",
-            })}
-          >
-            <Component {...pageProps} />
-          </RainbowKitProvider>
-        </WagmiConfig>
+        <GoogleOAuthProvider clientId="276764548749-kp580h77fv3bg9ofoeu5563saggg7jpo.apps.googleusercontent.com">
+          <WagmiConfig config={wagmiConfig}>
+            <RainbowKitProvider
+              chains={chains}
+              theme={lightTheme({
+                accentColor: "#10b981",
+                accentColorForeground: "white",
+                borderRadius: "medium",
+                fontStack: "system",
+                overlayBlur: "small",
+              })}
+            >
+              <Component {...pageProps} />
+            </RainbowKitProvider>
+          </WagmiConfig>
+        </GoogleOAuthProvider>
       ) : null}
     </>
   );

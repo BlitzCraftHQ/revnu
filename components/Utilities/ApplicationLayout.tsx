@@ -26,8 +26,8 @@ const navigation = [
     icon: DocumentTextIcon,
   },
   {
-    name: "Register Vehicle",
-    href: "/register-vehicle",
+    name: "Create Bounty",
+    href: "/create-bounty",
     icon: CursorArrowRippleIcon,
   },
   {
@@ -115,12 +115,12 @@ export default function ApplicationLayout({
                             <Image
                               src="/logos/logo.png"
                               className="h-12 w-12"
-                              alt="Electra"
+                              alt="Revnu"
                               height={512}
                               width={512}
                             />
                             <div className="text-2xl font-black text-white">
-                              <div>Electra</div>
+                              <div>Revnu</div>
                               <div className="-mt-1 text-xs font-medium text-gray-200">
                                 by BlitzCraft
                               </div>
