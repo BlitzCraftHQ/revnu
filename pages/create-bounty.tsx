@@ -5,18 +5,39 @@ import { useContractWrite } from "wagmi";
 import DEPLOYED_CONTRACTS from "@/utilities/contractDetails";
 import { encodeFunctionData } from "viem";
 import ApplicationLayout from "@/components/Utilities/ApplicationLayout";
+import { Fragment } from "react";
+import { Menu, Transition } from "@headlessui/react";
+import {
+  ArchiveBoxIcon,
+  ArrowRightCircleIcon,
+  ChevronDownIcon,
+  DocumentDuplicateIcon,
+  UserPlusIcon,
+  PencilSquareIcon,
+  HandThumbUpIcon,
+  ChatBubbleBottomCenterTextIcon,
+} from "@heroicons/react/20/solid";
 
-export default function RegisterVehicle() {
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+const actionMethods = [
+  { id: "like", title: "Like" },
+  { id: "comment", title: "Comment" },
+  { id: "subscribe", title: "Subscribe" },
+];
+
+export default function CreateBounty() {
   const [Loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showFailed, setShowFailed] = useState(false);
 
   const [inputs, setInputs] = useState({
-    name: "",
-    make: "",
-    model: "",
-    VINNumber: "",
-    idealChargingWattage: "",
+    actionId: "",
+    actionType: "",
+    actionCount: 0,
+    reward: 0,
   });
 
   const handleInput = (event: {
@@ -30,16 +51,16 @@ export default function RegisterVehicle() {
     }));
   };
 
-  const {
-    data,
-    isLoading,
-    isSuccess,
-    write: registerVehicle,
-  } = useContractWrite({
-    address: DEPLOYED_CONTRACTS.VEHICLE_LEDGER.address,
-    abi: DEPLOYED_CONTRACTS.VEHICLE_LEDGER.abi,
-    functionName: "registerVehicle",
-  });
+  // const {
+  //   data,
+  //   isLoading,
+  //   isSuccess,
+  //   write: registerVehicle,
+  // } = useContractWrite({
+  //   address: DEPLOYED_CONTRACTS.VEHICLE_LEDGER.address,
+  //   abi: DEPLOYED_CONTRACTS.VEHICLE_LEDGER.abi,
+  //   functionName: "registerVehicle",
+  // });
 
   // Submit form
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -48,42 +69,35 @@ export default function RegisterVehicle() {
     setShowSuccess(false);
     setShowFailed(false);
 
-    console.log("Inputs:", [
-      inputs.VINNumber,
-      JSON.stringify({
-        name: inputs.name,
-        make: inputs.make,
-        model: inputs.model,
-        idealChargingWattage: inputs.idealChargingWattage,
-      }),
-    ]);
+    console.table(inputs);
+    setLoading(false);
 
-    registerVehicle({
-      args: [
-        inputs.VINNumber,
-        JSON.stringify({
-          name: inputs.name,
-          make: inputs.make,
-          model: inputs.model,
-          idealChargingWattage: inputs.idealChargingWattage,
-        }),
-      ],
-    });
+    // registerVehicle({
+    //   args: [
+    //     inputs.VINNumber,
+    //     JSON.stringify({
+    //       name: inputs.name,
+    //       make: inputs.make,
+    //       model: inputs.model,
+    //       idealChargingWattage: inputs.idealChargingWattage,
+    //     }),
+    //   ],
+    // });
 
-    if (isSuccess) {
-      setLoading(false);
-      setShowSuccess(true);
-    } else {
-      setLoading(false);
-      setShowSuccess(false);
-    }
+    // if (isSuccess) {
+    //   setLoading(false);
+    //   setShowSuccess(true);
+    // } else {
+    //   setLoading(false);
+    //   setShowSuccess(false);
+    // }
   };
 
   return (
     <>
       <Head>
         <title>
-          Dashboard - Electra | Democratizing EV Technology using the Blockchain
+          Dashboard - Revnu | Democratizing EV Technology using the Blockchain
         </title>
         <meta
           name="title"
@@ -139,108 +153,88 @@ export default function RegisterVehicle() {
         customHeaderDescription="Electra makes it extremely easy for your to charge your EV at virtually any Electra-enabled charging station."
       >
         <div className="rounded-md bg-white px-5 py-6 shadow sm:px-6">
-          <form
-            className="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-8"
-            onSubmit={handleSubmit}
-          >
-            <div className="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-zinc-300 focus-within:ring-2 focus-within:ring-primary-400">
+          <form onSubmit={handleSubmit}>
+            <div className="rounded-md my-2 px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-zinc-300 focus-within:ring-2 focus-within:ring-primary-400">
               <label
                 htmlFor="name"
                 className="block text-xs font-medium text-zinc-900"
               >
-                Name
+                Entity Link
               </label>
               <input
                 type="text"
-                name="name"
-                id="name"
+                name="actionId"
+                id="actionId"
                 onChange={handleInput}
-                value={inputs.name}
+                value={inputs.actionId}
                 className="block w-full border-0 p-0 text-zinc-900 placeholder:text-zinc-400 focus:ring-0 sm:text-sm sm:leading-6"
-                placeholder="My Primary Car"
+                placeholder="https://www.youtube.com/watch?v=o5uGF2598w0"
               />
             </div>
-
-            <div className="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-zinc-300 focus-within:ring-2 focus-within:ring-primary-400">
-              <label
-                htmlFor="make"
-                className="block text-xs font-medium text-zinc-900"
-              >
-                Make
+            <div>
+              <label className="text-base font-semibold text-gray-900">
+                Action Type
               </label>
-              <input
-                type="text"
-                name="make"
-                id="make"
-                onChange={handleInput}
-                value={inputs.make}
-                className="block w-full border-0 p-0 text-zinc-900 placeholder:text-zinc-400 focus:ring-0 sm:text-sm sm:leading-6"
-                placeholder="Lucid"
-              />
-            </div>
-
-            <div className="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-zinc-300 focus-within:ring-2 focus-within:ring-primary-400">
-              <label
-                htmlFor="model"
-                className="block text-xs font-medium text-zinc-900"
-              >
-                Model
-              </label>
-              <input
-                type="text"
-                name="model"
-                id="model"
-                onChange={handleInput}
-                value={inputs.model}
-                className="block w-full border-0 p-0 text-zinc-900 placeholder:text-zinc-400 focus:ring-0 sm:text-sm sm:leading-6"
-                placeholder="Air Touring"
-              />
-            </div>
-
-            <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 gap-x-5">
-              <div className="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-zinc-300 focus-within:ring-2 focus-within:ring-primary-400">
-                <label
-                  htmlFor="VINNumber"
-                  className="block text-xs font-medium text-zinc-900"
-                >
-                  VIN Number
-                </label>
-                <input
-                  type="text"
-                  name="VINNumber"
-                  id="VINNumber"
-                  onChange={handleInput}
-                  value={inputs.VINNumber}
-                  className="block w-full border-0 p-0 text-zinc-900 placeholder:text-zinc-400 focus:ring-0 sm:text-sm sm:leading-6"
-                  placeholder="Y5NBMBH75HU4GB5JH"
-                />
-              </div>
-
-              <div className="relative rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-zinc-300 focus-within:ring-2 focus-within:ring-primary-400">
-                <label
-                  htmlFor="idealChargingWattage"
-                  className="block text-xs font-medium text-zinc-900"
-                >
-                  Ideal Charging Wattage
-                </label>
-                <input
-                  type="text"
-                  name="idealChargingWattage"
-                  id="idealChargingWattage"
-                  onChange={handleInput}
-                  value={inputs.idealChargingWattage}
-                  className="block w-full border-0 p-0 text-zinc-900 placeholder:text-zinc-400 focus:ring-0 sm:text-sm sm:leading-6"
-                  placeholder="200"
-                />
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pt-4 pr-3">
-                  <span
-                    className="text-gray-500 sm:text-sm"
-                    id="price-currency"
-                  >
-                    kW
-                  </span>
+              <fieldset className="mt-4">
+                <legend className="sr-only">Action Type</legend>
+                <div className="space-y-4">
+                  {actionMethods.map((actionMethod) => (
+                    <div key={actionMethod.id} className="flex items-center">
+                      <input
+                        id="actionType"
+                        name="notification-method"
+                        type="radio"
+                        onChange={handleInput}
+                        value={actionMethod.id}
+                        defaultChecked={actionMethod.id === "email"}
+                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                      />
+                      <label
+                        htmlFor={actionMethod.id}
+                        className="ml-3 block text-sm font-medium leading-6 text-gray-900"
+                      >
+                        {actionMethod.title}
+                      </label>
+                    </div>
+                  ))}
                 </div>
-              </div>
+              </fieldset>
+            </div>
+
+            <div className="rounded-md my-2 px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-zinc-300 focus-within:ring-2 focus-within:ring-primary-400">
+              <label
+                htmlFor="actionCount"
+                className="block text-xs font-medium text-zinc-900"
+              >
+                Count
+              </label>
+              <input
+                type="text"
+                name="actionCount"
+                id="actionCount"
+                onChange={handleInput}
+                value={inputs.actionCount}
+                className="block w-full border-0 p-0 text-zinc-900 placeholder:text-zinc-400 focus:ring-0 sm:text-sm sm:leading-6"
+                placeholder="5"
+              />
+            </div>
+
+            <div className="rounded-md my-4 px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-zinc-300 focus-within:ring-2 focus-within:ring-primary-400">
+              <label
+                htmlFor="reward"
+                className="block text-xs font-medium text-zinc-900"
+              >
+                Reward
+              </label>
+              <input
+                type="text"
+                name="reward"
+                id="reward"
+                onChange={handleInput}
+                value={inputs.reward}
+                className="block w-full border-0 p-0 text-zinc-900 placeholder:text-zinc-400 focus:ring-0 sm:text-sm sm:leading-6"
+                placeholder="Y5NBMBH75HU4GB5JH"
+              />
             </div>
 
             {showSuccess && (
