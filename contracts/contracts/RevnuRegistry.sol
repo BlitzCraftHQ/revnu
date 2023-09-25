@@ -40,6 +40,7 @@ contract RevnuRegistry{
 
     mapping(uint256 => Bounty) public bountyRegistry;
     mapping(bytes32 => Claim) public claimRegistry;
+    mapping(address => uint256) public claimEarnings;
 
     event BountyClaimed(uint256 bountyId, address claimer, bytes32 claimHash, uint256 claimReward);
     event BountyAdded(uint256 bountyId, address bountyCreator, string actionId, string actionType, uint actionCount, uint noOfClaims, uint256 reward);
@@ -79,6 +80,9 @@ contract RevnuRegistry{
 
         // Increment Bounty noOfClaims
         bountyRegistry[_bountyId].noOfClaims += 1;
+
+        // Increment user earning balance
+        claimEarnings[msg.sender] += _claimReward;
 
         emit BountyClaimed(_bountyId, msg.sender, _claimHash, _claimReward); 
        
