@@ -1,23 +1,12 @@
 import { RevnuRegistry, RevnuToken } from "../../typechain-types"
 import { deployments, ethers } from "hardhat"
 import { assert, expect } from "chai"
-import {
-  FUNC,
-  PROPOSAL_DESCRIPTION,
-  NEW_STORE_VALUE,
-  VOTING_DELAY,
-  VOTING_PERIOD,
-  MIN_DELAY,
-} from "../../helper-hardhat-config"
-import { moveBlocks } from "../../utils/move-blocks"
-import { moveTime } from "../../utils/move-time"
 import { formatEther, parseEther } from "ethers/lib/utils"
 import { BigNumber } from "ethers"
 
-describe("Revnu Flow", async () => {
+describe("\n💸 Revnu Tests 💸", async () => {
   let revnuToken: RevnuToken
   let revnuRegistry: RevnuRegistry
-  let currentBountyId: BigNumber
 
   beforeEach(async () => {
     await deployments.fixture(["all"])
@@ -31,50 +20,57 @@ describe("Revnu Flow", async () => {
     await approveTx.wait(1)
 
     // Log allowance
-    const allowance = await revnuToken.allowance(
-      await revnuToken.signer.getAddress(),
-      revnuRegistry.address
-    )
-    console.log(`Allowance: ${formatEther(allowance.toString())}`)
+    await revnuToken
+      .allowance(await revnuToken.signer.getAddress(), revnuRegistry.address)
+      .then((res) => {
+        console.log(`Allowance before creating bounty: ${formatEther(res.toString())}`)
+      })
 
-    const res = await revnuRegistry.createBounty(
+    const createBounty = await revnuRegistry.createBounty(
       "https://www.youtube.com/watch?v=o5uGF259Nw0",
       "Likes",
-      1000,
-      parseEther("0.1")
+      100,
+      parseEther("1")
     )
-    await res.wait(1)
-    const bountyId = await revnuRegistry.getLatestBountyId()
-    console.log(`Created Bounty ID: ${bountyId}`)
-    currentBountyId = bountyId
+    let createBountyTx: any = await createBounty.wait(1)
+    let createdBountyId = createBountyTx.events![0]!.args!.bountyId
+    console.log("Created Bounty: ", createdBountyId.toString())
 
-    let latestBounty = await revnuRegistry.bountyRegistry(bountyId)
-    console.log(latestBounty.toString())
+    const currentBountyId = await revnuRegistry.getLatestBountyId()
+    console.log(`Created Bounty ID: `, createdBountyId.toString())
+
+    assert.equal(createdBountyId.toString(), currentBountyId.toString(), "Bounty ID's do not match")
+
+    let latestBounty: any = await revnuRegistry.bountyRegistry(currentBountyId)
+    console.log("Created Bounty: ", latestBounty.toString())
 
     // Log allowance again
-    const allowance2 = await revnuToken.allowance(
-      await revnuToken.signer.getAddress(),
-      revnuRegistry.address
-    )
-    console.log(`Allowance Checkpoint #2: ${formatEther(allowance2.toString())}`)
-  })
+    await revnuToken
+      .allowance(await revnuToken.signer.getAddress(), revnuRegistry.address)
+      .then((res) => {
+        console.log(`Allowance after creating bounty: ${formatEther(res.toString())}`)
+      })
 
-  it("Claim a bounty", async () => {
-    // Get current bounty
-    let latestBountyId = await revnuRegistry.getLatestBountyId()
-    console.log(`Current Bounty ID: ${latestBountyId}`)
-    let latestBounty = await revnuRegistry.bountyRegistry(latestBountyId)
-    console.log("Latest bounty: ", latestBounty.toString())
+    // Show token balance
+    await revnuToken.balanceOf(await revnuToken.signer.getAddress()).then((balance) => {
+      console.log(`Balance before claiming: ${formatEther(balance.toString())}`)
+    })
 
-    const res = await revnuRegistry.claimBounty(
-      latestBountyId,
-      "asasdaklsd23423ak3242dasda5B38Da6a701c568545dCfcB03FcB875f56beddC4"
-    )
-    await res.wait(1)
-    const claimId = await revnuRegistry.getLatestClaimId()
-    console.log(`Claim ID: ${claimId}`)
+    console.log("\n\nClaiming bounty...")
+    const claimBounty = await revnuRegistry.claimBounty(latestBounty.bountyId)
+    await claimBounty.wait(1).then(async (tx) => {
+      let claimedBountyClaimHash = tx.events![0]!.args!.claimHash
+      console.log("Claimed Bounty Claim Hash: ", claimedBountyClaimHash)
 
-    let latestClaim = await revnuRegistry.claimRegistry(claimId)
-    console.log(latestClaim.toString())
+      // Check if you can claim again
+      await expect(revnuRegistry.claimBounty(latestBounty.bountyId)).to.be.revertedWith(
+        "Bounty already claimed by user."
+      )
+    })
+
+    // Show token balance
+    await revnuToken.balanceOf(await revnuToken.signer.getAddress()).then((balance) => {
+      console.log(`\nBalance after claiming: ${formatEther(balance.toString())}`)
+    })
   })
 })
