@@ -45,6 +45,11 @@ const navigation = [
     href: "/stake",
     icon: CursorArrowRippleIcon,
   },
+  {
+    name: "Bounties",
+    href: "/bounties",
+    icon: HomeIcon,
+  },
   // {
   //   name: "Top-Up Wallet",
   //   href: "/top-up",
