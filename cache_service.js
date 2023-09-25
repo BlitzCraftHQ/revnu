@@ -4,35 +4,23 @@ const { MongoClient } = require("mongodb")
 const dotenv = require("dotenv")
 dotenv.config()
 
-const GOVERNOR = require("./deployments/althea/GovernorContract.json")
-const STATION_REGISTRY = require("./deployments/althea/StationRegistry.json")
-const VEHICLE_LEDGER = require("./deployments/althea/VehicleLedger.json")
-const ELECTRA_TOKEN = require("./deployments/althea/ElectraToken.json")
+const REGISTRY = require("./deployments/pegoTestNet/RevnuRegistry.json")
+const TOKEN = require("./deployments/pegoTestNet/RevnuToken.json")
+const config = require("./hardhat.config.ts")
 
 const app = express()
 const port = 3002
 
 // Initialize your Ethereum provider (e.g., Infura)
-const provider = new ethers.providers.JsonRpcProvider("https://althea.zone:8545")
-let chainId = 417834
-// const provider = new ethers.providers.JsonRpcProvider('https://polygon-mumbai-bor.publicnode.com');
+const provider = new ethers.providers.JsonRpcProvider(config.networks.pegoTestNet.url)
+let chainId = config.networks.pegoTestNet.chainId
 
 const client = new MongoClient(process.env.MONGO_URI)
-const db = client.db("electra")
+const db = client.db("revnu")
 
 // Connect to the contract
-const tokenContract = new ethers.Contract(ELECTRA_TOKEN.address, ELECTRA_TOKEN.abi, provider)
-const governorContract = new ethers.Contract(GOVERNOR.address, GOVERNOR.abi, provider)
-const StationRegistryContract = new ethers.Contract(
-  STATION_REGISTRY.address,
-  STATION_REGISTRY.abi,
-  provider
-)
-const VehicleLedgerContract = new ethers.Contract(
-  VEHICLE_LEDGER.address,
-  VEHICLE_LEDGER.abi,
-  provider
-)
+const tokenContract = new ethers.Contract(TOKEN.address, TOKEN.abi, provider)
+const registryContract = new ethers.Contract(REGISTRY.address, REGISTRY.abi, provider)
 
 // Start listening to the event
 tokenContract.on("*", async (event) => {
@@ -41,19 +29,7 @@ tokenContract.on("*", async (event) => {
   await db.collection("electra-events").insertOne({ ...event, chainId })
 })
 
-governorContract.on("*", async (event) => {
-  // console.log('Event emitted:');
-  console.log(event) // Log the event data
-  await db.collection("electra-events").insertOne({ ...event, chainId })
-})
-
-StationRegistryContract.on("*", async (event) => {
-  // console.log('Event emitted:');
-  console.log(event) // Log the event data
-  await db.collection("electra-events").insertOne({ ...event, chainId })
-})
-
-VehicleLedgerContract.on("*", async (event) => {
+registryContract.on("*", async (event) => {
   // console.log('Event emitted:');
   console.log(event) // Log the event data
   await db.collection("electra-events").insertOne({ ...event, chainId })
