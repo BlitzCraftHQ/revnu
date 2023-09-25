@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Head from "next/head";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import { useContractWrite } from "wagmi";
-import DEPLOYED_CONTRACTS from "@/utilities/contractDetails";
-import { encodeFunctionData } from "viem";
+// import { useContractWrite } from "wagmi";
+// import DEPLOYED_CONTRACTS from "@/utilities/contractDetails";
+// import { encodeFunctionData } from "viem";
 import ApplicationLayout from "@/components/Utilities/ApplicationLayout";
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
@@ -18,7 +18,7 @@ import {
   ChatBubbleBottomCenterTextIcon,
 } from "@heroicons/react/20/solid";
 
-function classNames(...classes) {
+function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -63,35 +63,35 @@ export default function CreateBounty() {
   // });
 
   // Submit form
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    setLoading(true);
-    setShowSuccess(false);
-    setShowFailed(false);
+  // const handleSubmit = async (e: { preventDefault: () => void }) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setShowSuccess(false);
+  //   setShowFailed(false);
 
-    console.table(inputs);
-    setLoading(false);
+  //   console.table(inputs);
+  //   setLoading(false);
 
-    // registerVehicle({
-    //   args: [
-    //     inputs.VINNumber,
-    //     JSON.stringify({
-    //       name: inputs.name,
-    //       make: inputs.make,
-    //       model: inputs.model,
-    //       idealChargingWattage: inputs.idealChargingWattage,
-    //     }),
-    //   ],
-    // });
+  //   // registerVehicle({
+  //   //   args: [
+  //   //     inputs.VINNumber,
+  //   //     JSON.stringify({
+  //   //       name: inputs.name,
+  //   //       make: inputs.make,
+  //   //       model: inputs.model,
+  //   //       idealChargingWattage: inputs.idealChargingWattage,
+  //   //     }),
+  //   //   ],
+  //   // });
 
-    // if (isSuccess) {
-    //   setLoading(false);
-    //   setShowSuccess(true);
-    // } else {
-    //   setLoading(false);
-    //   setShowSuccess(false);
-    // }
-  };
+  //   // if (isSuccess) {
+  //   //   setLoading(false);
+  //   //   setShowSuccess(true);
+  //   // } else {
+  //   //   setLoading(false);
+  //   //   setShowSuccess(false);
+  //   // }
+  // };
 
   return (
     <>
@@ -149,11 +149,11 @@ export default function CreateBounty() {
       </Head>
 
       <ApplicationLayout
-        customHeader="Register Your Vehicle"
-        customHeaderDescription="Electra makes it extremely easy for your to charge your EV at virtually any Electra-enabled charging station."
+        customHeader="Create A Bounty"
+        // customHeaderDescription="Electra makes it extremely easy for your to charge your EV at virtually any Electra-enabled charging station."
       >
         <div className="rounded-md bg-white px-5 py-6 shadow sm:px-6">
-          <form onSubmit={handleSubmit}>
+          <form className="space-y-5">
             <div className="rounded-md my-2 px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-zinc-300 focus-within:ring-2 focus-within:ring-primary-400">
               <label
                 htmlFor="name"
@@ -175,9 +175,9 @@ export default function CreateBounty() {
               <label className="text-base font-semibold text-gray-900">
                 Action Type
               </label>
-              <fieldset className="mt-4">
+              <fieldset className="mt-1">
                 <legend className="sr-only">Action Type</legend>
-                <div className="space-y-4">
+                <div className="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0">
                   {actionMethods.map((actionMethod) => (
                     <div key={actionMethod.id} className="flex items-center">
                       <input
@@ -187,7 +187,7 @@ export default function CreateBounty() {
                         onChange={handleInput}
                         value={actionMethod.id}
                         defaultChecked={actionMethod.id === "email"}
-                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                        className="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-600"
                       />
                       <label
                         htmlFor={actionMethod.id}
