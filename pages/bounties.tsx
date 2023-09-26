@@ -7,6 +7,7 @@ import {
   useContractRead,
   useContractReads,
 } from "wagmi";
+import { useState } from "react";
 
 const revnuContractConfig = {
   address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
@@ -15,6 +16,7 @@ const revnuContractConfig = {
 };
 
 export default function Bounties() {
+  const [bounties, setBounties] = useState<any>([]);
   const {
     data: lastBountyId,
     isError,
@@ -26,15 +28,17 @@ export default function Bounties() {
     functionName: "getLatestBountyId",
   });
 
+  const range: any = (n: number) =>
+    Array.from(Array(n).keys()).map((n) => n + 1);
+
   useEffect(() => {
     if (lastBountyId) {
-      console.log("Last Bounty", lastBountyId);
+      let bounties = range(parseInt(lastBountyId));
+      setBounties(bounties);
+      console.log("Last Bounty", bounties);
     }
   }, [lastBountyId]);
 
-  //   if (isError) return <div className="text-black">Error</div>;
-  //   if (isLoading) return <div className="text-black">Loading</div>;
-  //   if (isSuccess)
   return (
     <>
       <Head>
@@ -99,11 +103,14 @@ export default function Bounties() {
             {isLoading ? (
               <p>Loading</p>
             ) : isSuccess ? (
-              <GetBounties lastBountyId={lastBountyId} />
+              <div>
+                {bounties.map((bountyId: any, i: number) => (
+                  <BountyCard bountyId={bountyId} key={i} />
+                ))}
+              </div>
             ) : (
               <p>Error</p>
             )}
-            Test
           </div>
         </div>
       </ApplicationLayout>
@@ -111,33 +118,41 @@ export default function Bounties() {
   );
 }
 
-function GetBounties({ lastBountyId }: any) {
-  const range: any = (n: number) => Array.from(Array(n).keys());
-
-  let contracts = range(parseInt(lastBountyId)).map((bountyId: any) => [
-    {
-      ...revnuContractConfig,
-      args: [bountyId + 1],
-    },
-  ]);
-
-  const { data, isError, isSuccess, isLoading } = useContractRead({
-    contracts,
+function BountyCard({ bountyId }: any) {
+  const {
+    data: bounty,
+    isError,
+    isLoading,
+    isSuccess,
+  }: any = useContractRead({
+    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
+    abi: DEPLOYED_CONTRACTS.REVNU_REGISTRY.abi,
+    functionName: "bountyRegistry",
+    args: [bountyId],
   });
-
-  useEffect(() => {
-    console.log("Test: ", contracts);
-    console.log("Data: ", data);
-    console.log("Loading: ", isLoading);
-  }, [data, isLoading]);
 
   return (
     <div>
-      {isLoading
-        ? "Loading"
-        : isSuccess
-        ? JSON.stringify(data)
-        : JSON.stringify(isError)}
+      {isLoading ? (
+        "Loading"
+      ) : (
+        <div className="mt-5">
+          Bounty ID: {bounty[0].toString()}
+          <br />
+          Bounty Creator: {bounty[1].toString()}
+          <br />
+          Action ID: {bounty[2].toString()}
+          <br />
+          Action Type: {bounty[3].toString()}
+          <br />
+          Action Count: {bounty[4].toString()}
+          <br />
+          Action Claims: {bounty[5].toString()}
+          <br />
+          {/* Reward for that action */}
+          Reward: {parseFloat(bounty[6]) / parseFloat(bounty[4])}
+        </div>
+      )}
     </div>
   );
 }
