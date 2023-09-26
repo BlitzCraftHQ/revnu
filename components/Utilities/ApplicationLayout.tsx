@@ -96,6 +96,7 @@ export default function ApplicationLayout({
   const { disconnect } = useDisconnect({
     onSuccess() {
       router.push("/");
+      localStorage.removeItem("token");
     },
   });
 
