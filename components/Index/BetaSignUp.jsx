@@ -455,7 +455,7 @@ export default function BetaSignUp() {
             </h2>
             <p className="mt-6 text-2xl leading-10 text-zinc-200">
               Engaging high-intent leads as fast as possible is a no brainer.
-              Let&apos;s talk and find out how Electra can best help your sales
+              Let&apos;s talk and find out how Revnu can best help your sales
               team.
             </p>
             <dl className="mt-10 max-w-xl space-y-8 text-xl leading-7 text-zinc-200 lg:max-w-none">
