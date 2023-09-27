@@ -21,34 +21,19 @@ const navigation = [
     icon: HomeIcon,
   },
   {
-    name: "Governance",
-    href: "/governance",
-    icon: DocumentTextIcon,
-  },
-  {
     name: "Create Bounty",
     href: "/create-bounty",
-    icon: CursorArrowRippleIcon,
-  },
-  {
-    name: "Register Charger",
-    href: "/register-charger",
-    icon: Battery100Icon,
-  },
-  {
-    name: "Top Up",
-    href: "/top-up",
-    icon: CursorArrowRippleIcon,
-  },
-  {
-    name: "Stake",
-    href: "/stake",
     icon: CursorArrowRippleIcon,
   },
   {
     name: "Bounties",
     href: "/bounties",
     icon: HomeIcon,
+  },
+  {
+    name: "Stake",
+    href: "/stake",
+    icon: CursorArrowRippleIcon,
   },
   // {
   //   name: "Top-Up Wallet",
