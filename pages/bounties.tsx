@@ -83,12 +83,26 @@ function BountyCard({ bountyId, key }: any) {
     isError: isClaimError,
     isLoading: isClaimLoading,
     isSuccess: isClaimSuccess,
+    error,
     write: claimBounty,
   }: any = useContractWrite({
     address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
     abi: DEPLOYED_CONTRACTS.REVNU_REGISTRY.abi,
     functionName: "claimBounty",
   });
+
+  useEffect(() => {
+    if (isClaimError) {
+      let claimErrorMessage: any = error;
+      claimErrorMessage = claimErrorMessage?.message;
+
+      if (claimErrorMessage.includes("Bounty already claimed by user")) {
+        console.log("error");
+
+        setErrorMessage("Bounty already claimed by user");
+      }
+    }
+  }, [isClaimError, error]);
 
   async function handleVerification(actionLink, actionType, verifiedBountyId) {
     let myArray = actionLink.split("//");
@@ -251,104 +265,102 @@ function BountyCard({ bountyId, key }: any) {
   return isLoading ? (
     "Loading"
   ) : (
-    <>
-      <div key={key} className="bg-white border border-gray-200 rounded-md">
-        <div className="px-5 sm:px-6 lg:px-8 pt-5 font-black text-xl">
-          Bounty Information
-        </div>
+    <div key={key} className="bg-white border border-gray-200 rounded-md">
+      <div className="px-5 sm:px-6 lg:px-8 pt-5 font-black text-xl">
+        Bounty Information
+      </div>
 
-        {/* Votes Progress Bar Start */}
-        <div className="mt-5 px-5 sm:px-6">
-          <p className="mt-1 text-md leading-5 font-bold flex justify-between">
-            <span className="text-zinc-700">Action Claims</span>
-            <span className="">
-              {bounty[5].toString()} out of {bounty[4].toString()}
-            </span>
-          </p>
-          <div className="mt-3 w-full bg-zinc-200 rounded-full h-1">
-            <div
-              className="bg-green-600 h-1 rounded-full"
-              style={{
-                width: `${
-                  (parseFloat(bounty[5]) / parseFloat(bounty[4])) * 100
-                }%`,
-              }}
-            ></div>
-          </div>
-        </div>
-        {/* Votes Progress Bar End */}
-        {/* Addresses Start */}
-        <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-          <table className="min-w-full divide-y divide-gray-300">
-            <tbody className="divide-y divide-gray-200">
-              <tr>
-                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                  Bounty ID
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
-                  {bounty[0].toString()}
-                </td>
-              </tr>
-              <tr>
-                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                  Bounty Creator
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
-                  {bounty[1].toString()}
-                </td>
-              </tr>
-              <tr>
-                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                  Action ID
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
-                  {bounty[2].toString()}
-                </td>
-              </tr>
-              <tr>
-                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                  Action Type
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
-                  {bounty[3].toString()}
-                </td>
-              </tr>
-              <tr>
-                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                  Action Rewards
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
-                  {parseFloat(bounty[6]) / parseFloat(bounty[4])}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        {/* Addresses End */}
-        <div className="px-5 sm:px-6 pb-5">
-          <button
-            disabled={bounty[4] === bounty[5]}
-            className="disabled:opacity-50 disabled:bg-zinc-800 w-full rounded-md bg-primary-400 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
-            onClick={() =>
-              handleVerification(
-                bounty[2].toString(),
-                bounty[3].toString(),
-                bounty[0]
-              )
-            }
-          >
-            {bounty[4] === bounty[5]
-              ? "Bounty Completed"
-              : isClaimLoading
-              ? "Claiming"
-              : isClaimSuccess
-              ? "Claimed"
-              : "Validate"}
-          </button>
+      {/* Votes Progress Bar Start */}
+      <div className="mt-5 px-5 sm:px-6">
+        <p className="mt-1 text-md leading-5 font-bold flex justify-between">
+          <span className="text-zinc-700">Action Claims</span>
+          <span className="">
+            {bounty[5].toString()} out of {bounty[4].toString()}
+          </span>
+        </p>
+        <div className="mt-3 w-full bg-zinc-200 rounded-full h-1">
+          <div
+            className="bg-green-600 h-1 rounded-full"
+            style={{
+              width: `${
+                (parseFloat(bounty[5]) / parseFloat(bounty[4])) * 100
+              }%`,
+            }}
+          ></div>
         </div>
       </div>
+      {/* Votes Progress Bar End */}
+      {/* Addresses Start */}
+      <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <table className="min-w-full divide-y divide-gray-300">
+          <tbody className="divide-y divide-gray-200">
+            <tr>
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                Bounty ID
+              </td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
+                {bounty[0].toString()}
+              </td>
+            </tr>
+            <tr>
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                Bounty Creator
+              </td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
+                {bounty[1].toString()}
+              </td>
+            </tr>
+            <tr>
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                Action ID
+              </td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
+                {bounty[2].toString()}
+              </td>
+            </tr>
+            <tr>
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                Action Type
+              </td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
+                {bounty[3].toString()}
+              </td>
+            </tr>
+            <tr>
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                Action Rewards
+              </td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
+                {parseFloat(bounty[6]) / parseFloat(bounty[4])}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      {/* Addresses End */}
+      <div className="px-5 sm:px-6 pb-4">
+        <button
+          disabled={bounty[4] === bounty[5]}
+          className="disabled:opacity-50 disabled:bg-zinc-800 w-full rounded-md bg-primary-400 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
+          onClick={() =>
+            handleVerification(
+              bounty[2].toString(),
+              bounty[3].toString(),
+              bounty[0]
+            )
+          }
+        >
+          {bounty[4] === bounty[5]
+            ? "Bounty Completed"
+            : isClaimLoading
+            ? "Claiming"
+            : isClaimSuccess
+            ? "Claimed"
+            : "Validate"}
+        </button>
+      </div>
       {isClaimSuccess && (
-        <div className="mt-6 sm:col-span-2 rounded-md bg-green-600 px-4 py-3">
+        <div className="mb-5 mx-5 sm:col-span-2 rounded-md bg-green-600 px-4 py-3">
           <div className="flex">
             <div className="flex-shrink-0">
               <CheckCircleIcon
@@ -365,7 +377,7 @@ function BountyCard({ bountyId, key }: any) {
         </div>
       )}
       {(isClaimError || verificationError) && (
-        <div className="mt-6 sm:col-span-2 rounded-md bg-red-600 px-4 py-3">
+        <div className="mb-5 mx-5 sm:col-span-2 rounded-md bg-red-600 px-4 py-3">
           <div className="flex">
             <div className="flex-shrink-0">
               <XCircleIcon
@@ -379,6 +391,6 @@ function BountyCard({ bountyId, key }: any) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

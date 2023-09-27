@@ -27,6 +27,8 @@ export default function Home() {
     functionName: "getLatestBountyId",
   });
 
+  // get balance of logged user
+
   const {
     data: balance,
     isBalanceError,
@@ -39,7 +41,19 @@ export default function Home() {
     args: [address],
   });
 
-  console.log(balance);
+  const {
+    data: earnings,
+    isEarningsError,
+    isEarningsLoading,
+    isEarningsSuccess,
+  }: any = useContractRead({
+    address: DEPLOYED_CONTRACTS.REVNU_TOKEN.address,
+    abi: DEPLOYED_CONTRACTS.REVNU_TOKEN.abi,
+    functionName: "claimEarnings",
+    args: [address],
+  });
+
+  console.log(earnings);
 
   const bountiesContainerRef: any = useRef(null);
   const [showEmptyState, setShowEmptyState] = useState(false);

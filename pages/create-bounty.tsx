@@ -3,7 +3,7 @@ import Head from "next/head";
 import {
   CheckCircleIcon,
   XCircleIcon,
-  CheckIcon,
+  ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useContractRead, useContractWrite } from "wagmi";
 import DEPLOYED_CONTRACTS from "@/utilities/contractDetails";
@@ -23,9 +23,6 @@ const actionMethods = [
 ];
 
 export default function CreateBounty() {
-  const [Loading, setLoading] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showFailed, setShowFailed] = useState(false);
   const [open, setOpen] = useState(false);
 
   const cancelButtonRef = useRef(null);
@@ -105,9 +102,6 @@ export default function CreateBounty() {
   // Submit form
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    setLoading(true);
-    setShowSuccess(false);
-    setShowFailed(false);
 
     console.table(inputs);
 
@@ -136,49 +130,6 @@ export default function CreateBounty() {
           name="title"
           content="Notifications - Electra | Push Notification Service for the Neo Blockchain"
         />
-        <meta
-          name="description"
-          content="Stay informed and in-the-know with real-time push
-            notifications on transactions, smart contracts, and network
-            developments. Empower your Neo experience with Electra's
-            timely alerts, ensuring you never miss a beat on the Neo
-            Blockchain."
-        />
-
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://neocast.blitzcrafthq.com" />
-        <meta
-          property="og:title"
-          content="Notifications - Electra | Push Notification Service for the Neo Blockchain"
-        />
-        <meta
-          property="og:description"
-          content="Stay informed and in-the-know with real-time push
-            notifications on transactions, smart contracts, and network
-            developments. Empower your Neo experience with Electra's
-            timely alerts, ensuring you never miss a beat on the Neo
-            Blockchain."
-        />
-        <meta property="og:image" content="/meta-image.jpg" />
-
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta
-          property="twitter:url"
-          content="https://neocast.blitzcrafthq.com/"
-        />
-        <meta
-          property="twitter:title"
-          content="Notifications - Electra | Push Notification Service for the Neo Blockchain"
-        />
-        <meta
-          property="twitter:description"
-          content="Stay informed and in-the-know with real-time push
-            notifications on transactions, smart contracts, and network
-            developments. Empower your Neo experience with Electra's
-            timely alerts, ensuring you never miss a beat on the Neo
-            Blockchain."
-        />
-        <meta property="twitter:image" content="/meta-image.jpg" />
       </Head>
 
       <ApplicationLayout
@@ -356,9 +307,9 @@ export default function CreateBounty() {
                 >
                   <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                     <div>
-                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                        <CheckIcon
-                          className="h-6 w-6 text-green-600"
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100">
+                        <ExclamationCircleIcon
+                          className="h-6 w-6 text-yellow-500"
                           aria-hidden="true"
                         />
                       </div>
@@ -390,7 +341,7 @@ export default function CreateBounty() {
                     <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                       <button
                         type="button"
-                        className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                        className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                         onClick={() => handleApprove(appovedAmt)}
                       >
                         Approve
