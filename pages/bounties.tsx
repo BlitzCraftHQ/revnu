@@ -69,19 +69,18 @@ function BountyCard({ bountyId, key }: any) {
   });
 
   async function handleVerification(actionLink, actionType) {
-    actionLink = "https://www.youtube.com/channel/UCeMcCNtvQe6ecVnm_RrWzng";
+    // actionLink = "https://www.youtube.com/channel/UCeMcCNtvQe6ecVnm_RrWzng";
     let myArray = actionLink.split("//");
     let actionId = myArray[1].split("/").slice(-1)[0];
     const accessToken = localStorage.getItem("token");
     const USER_ID_TO_CHECK = "XSeTE6g9tAieEWKegXZfhw";
-    actionType = "subscribe";
+    actionType = "comment";
 
     switch (actionType) {
       case "like":
         console.log("like or comment");
         let videoId = actionId.split("=")[1];
         console.log("video id:", videoId);
-        console.log("API KEY: ", process.env.YOUTUBE_API_KEY);
 
         try {
           const apiUrl =
@@ -103,8 +102,6 @@ function BountyCard({ bountyId, key }: any) {
               if (userRating) {
                 if (userRating.rating === "like") {
                   console.log("The user has liked the video.");
-                } else if (userRating.rating === "dislike") {
-                  console.log("The user has disliked the video.");
                 } else {
                   console.log("The user has not rated the video.");
                 }

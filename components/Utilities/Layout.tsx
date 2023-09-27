@@ -28,10 +28,13 @@ export default function Layout({ children }: Props) {
   const [token, setToken] = useState("");
 
   const login = useGoogleLogin({
+    scope:
+      "https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.force-ssl",
     onSuccess: (codeResponse) => {
       setToken(codeResponse.access_token);
+      console.log(codeResponse);
+
       localStorage.setItem("token", codeResponse.access_token);
-      console.log(codeResponse.access_token);
     },
     onError: (error) => console.log("Login Failed:", error),
   });
