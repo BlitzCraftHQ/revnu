@@ -158,31 +158,6 @@ function BountyCard({ bountyId, key }: any) {
     args: [bountyId],
   });
 
-  async function handleVerification(actionLink) {
-    const myArray = actionLink.split("//");
-    const actionId = myArray[1].split("/").slice(-1)[0];
-    console.log(actionId);
-    const accessToken = localStorage.getItem("token");
-    console.log(accessToken);
-
-    const response = await axios.get(
-      "https://www.googleapis.com/youtube/v3/activities",
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          part: "snippet",
-          mine: true,
-          maxResults: 10, // Adjust the number of results as needed
-          type: "like",
-        },
-      }
-    );
-
-    console.log(response);
-  }
-
   return isLoading ? (
     "Loading"
   ) : (
@@ -258,14 +233,6 @@ function BountyCard({ bountyId, key }: any) {
         </table>
       </div>
       {/* Addresses End */}
-      <div className="px-5 sm:px-6 pb-5">
-        <button
-          className="w-full rounded-md bg-primary-400 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
-          onClick={() => handleVerification(bounty[2].toString())}
-        >
-          Validate
-        </button>
-      </div>
     </div>
   );
 }
