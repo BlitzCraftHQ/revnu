@@ -79,6 +79,7 @@ export default function CreateBounty() {
     data,
     isLoading,
     isSuccess,
+    isError,
     write: createBounty,
   } = useContractWrite({
     address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
@@ -90,12 +91,12 @@ export default function CreateBounty() {
   });
 
   //Approve Tokens
-  const handleApprove = () => {
+  const handleApprove = (appovedAmt) => {
     console.log(appovedAmt);
     approveTokens({
       args: [
         DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
-        parseEther(inputs.reward.toString()),
+        parseEther(appovedAmt.toString()),
       ],
     });
     if (isApproveSuccess) setOpen(false);
@@ -122,46 +123,6 @@ export default function CreateBounty() {
         ],
       });
       console.log(data);
-    }
-
-    // approveTokens({
-    //   args: [
-    //     DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
-    //     parseEther(inputs.reward.toString()),
-    //   ],
-    // });
-
-    // if (isApproveSuccess) {
-    //   allowanceCheck({
-    //     args: [address, DEPLOYED_CONTRACTS.REVNU_REGISTRY.address],
-    //   });
-    //   if (isAllowanceSuccess) console.log(allowanceData);
-    // }
-
-    // if (isApproveSuccess) {
-    //   createBounty({
-    //     args: [
-    //       inputs.actionId,
-    //       inputs.actionType,
-    //       inputs.actionCount,
-    //       inputs.reward,
-    //     ],
-    //   });
-    // }
-
-    // if (isApproveSuccess) {
-    //   allowanceCheck({
-    //     args: [address, DEPLOYED_CONTRACTS.REVNU_REGISTRY.address],
-    //   });
-    //   if (isAllowanceSuccess) console.log(allowanceData);
-    // }
-
-    if (isSuccess) {
-      setLoading(false);
-      setShowSuccess(true);
-    } else {
-      setLoading(false);
-      setShowSuccess(false);
     }
   };
 
@@ -309,7 +270,7 @@ export default function CreateBounty() {
               />
             </div>
 
-            {showSuccess && (
+            {isSuccess && (
               <div className="mt-6 sm:col-span-2 rounded-md bg-green-600 px-4 py-3">
                 <div className="flex">
                   <div className="flex-shrink-0">
@@ -326,7 +287,7 @@ export default function CreateBounty() {
                 </div>
               </div>
             )}
-            {showFailed && (
+            {isError && (
               <div className="mt-6 sm:col-span-2 rounded-md bg-red-600 px-4 py-3">
                 <div className="flex">
                   <div className="flex-shrink-0">
@@ -348,11 +309,11 @@ export default function CreateBounty() {
               <button
                 type="submit"
                 className={`rounded-md bg-primary-400 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400" ${
-                  Loading && "opacity-50 cursor-progress"
+                  isLoading && "opacity-50 cursor-progress"
                 }`}
-                disabled={Loading}
+                disabled={isLoading}
               >
-                {Loading ? (
+                {isLoading ? (
                   "Creating Bounty"
                 ) : (
                   <span className="flex justify-center gap-x-2">
@@ -430,7 +391,7 @@ export default function CreateBounty() {
                       <button
                         type="button"
                         className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                        onClick={handleApprove}
+                        onClick={() => handleApprove(appovedAmt)}
                       >
                         Approve
                       </button>
