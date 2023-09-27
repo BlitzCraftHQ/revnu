@@ -2,7 +2,7 @@ import Head from "next/head";
 import ApplicationLayout from "@/components/Utilities/ApplicationLayout";
 import DEPLOYED_CONTRACTS from "@/utilities/contractDetails";
 import { useState, useEffect } from "react";
-import { useContractRead } from "wagmi";
+import { useContractRead, useContractWrite } from "wagmi";
 import axios from "axios";
 
 export default function Bounties() {
@@ -68,13 +68,22 @@ function BountyCard({ bountyId, key }: any) {
     args: [bountyId],
   });
 
-  async function handleVerification(actionLink, actionType) {
+  const {
+    data: claimData,
+    isClaimLoading,
+    isClaimSuccess,
+    write: claimBounty,
+  }: any = useContractWrite({
+    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
+    abi: DEPLOYED_CONTRACTS.REVNU_REGISTRY.abi,
+    functionName: "claimBounty",
+  });
+
+  async function handleVerification(actionLink, actionType, verifiedBountyId) {
     // actionLink = "https://www.youtube.com/channel/UCeMcCNtvQe6ecVnm_RrWzng";
     let myArray = actionLink.split("//");
     let actionId = myArray[1].split("/").slice(-1)[0];
     const accessToken = localStorage.getItem("token");
-    const USER_ID_TO_CHECK = "XSeTE6g9tAieEWKegXZfhw";
-    actionType = "comment";
 
     switch (actionType) {
       case "like":
@@ -83,36 +92,31 @@ function BountyCard({ bountyId, key }: any) {
         console.log("video id:", videoId);
 
         try {
-          const apiUrl =
-            "https://www.googleapis.com/youtube/v3/videos/getRating";
-
           // Make a GET request to fetch the user's rating (like/dislike) for the video
-          axios
-            .get(apiUrl, {
+          const ratingResponse = await axios.get(
+            "https://www.googleapis.com/youtube/v3/videos/getRating",
+            {
               params: {
                 key: "AIzaSyD2wZfkQuijKkXhKD_CGjeP986xkm7dY-8",
                 id: videoId,
                 access_token: accessToken,
               },
-            })
-            .then((response) => {
-              // Handle the API response here
-              const userRating = response.data.items[0]; // Assuming there's only one item
+            }
+          );
+          const userRating = ratingResponse.data.items[0]; // Assuming there's only one item
 
-              if (userRating) {
-                if (userRating.rating === "like") {
-                  console.log("The user has liked the video.");
-                } else {
-                  console.log("The user has not rated the video.");
-                }
-              } else {
-                console.log("User rating information not found.");
-              }
-            })
-            .catch((error) => {
-              // Handle errors
-              console.error("Error fetching user rating:", error);
-            });
+          if (userRating) {
+            if (userRating.rating === "like") {
+              console.log("The user has liked the video.");
+              claimBounty({
+                args: [verifiedBountyId],
+              });
+            } else {
+              console.log("The user has not rated the video.");
+            }
+          } else {
+            console.log("User rating information not found.");
+          }
         } catch (error) {
           console.error("Error:", error.message);
         }
@@ -138,6 +142,9 @@ function BountyCard({ bountyId, key }: any) {
             subcribersResponse.data.items[0].snippet.resourceId.channelId;
           if (subscribedChannelId == actionId) {
             console.log("user has subscribed");
+            claimBounty({
+              args: [verifiedBountyId],
+            });
           }
         } else {
           console.log("you have not subscribed");
@@ -202,6 +209,9 @@ function BountyCard({ bountyId, key }: any) {
 
                     if (userHasCommented) {
                       console.log("The user has commented on the video.");
+                      claimBounty({
+                        args: [verifiedBountyId],
+                      });
                     } else {
                       console.log("The user has not commented on the video.");
                     }
@@ -334,7 +344,11 @@ function BountyCard({ bountyId, key }: any) {
         <button
           className="w-full rounded-md bg-primary-400 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
           onClick={() =>
-            handleVerification(bounty[2].toString(), bounty[3].toString())
+            handleVerification(
+              bounty[2].toString(),
+              bounty[3].toString(),
+              bounty[0]
+            )
           }
         >
           Validate
