@@ -3,7 +3,7 @@ import Head from "next/head";
 import axios from "axios";
 import { useAccount, useContractRead, useContractWrite } from "wagmi";
 import DEPLOYED_CONTRACTS from "@/utilities/contractDetails";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import numeral from "numeral";
 import ApplicationLayout from "@/components/Utilities/ApplicationLayout";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Link from "next/link";
@@ -47,13 +47,11 @@ export default function Home() {
     isEarningsLoading,
     isEarningsSuccess,
   }: any = useContractRead({
-    address: DEPLOYED_CONTRACTS.REVNU_TOKEN.address,
-    abi: DEPLOYED_CONTRACTS.REVNU_TOKEN.abi,
+    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
+    abi: DEPLOYED_CONTRACTS.REVNU_REGISTRY.abi,
     functionName: "claimEarnings",
     args: [address],
   });
-
-  console.log(earnings);
 
   const bountiesContainerRef: any = useRef(null);
   const [showEmptyState, setShowEmptyState] = useState(false);
@@ -65,7 +63,6 @@ export default function Home() {
     if (lastBountyId) {
       let bounties = range(parseInt(lastBountyId));
       setBounties(bounties);
-      console.log("Last Bounty", bounties);
     }
 
     // Show Empty State if there are no bounties
@@ -146,10 +143,21 @@ export default function Home() {
             <div className="mt-1 font-medium text-gray-500 text-sm">
               Total tokens you have claimed
             </div>
-            <div className="mt-5 font-black text-5xl text-gray-900">
-              5{" "}
-              <span className="text-base text-gray-500 font-medium">RVTK</span>
-            </div>
+            {earnings ? (
+              <div className="mt-5 font-black text-5xl text-gray-900">
+                {numeral(earnings).format("0 a").toUpperCase()}{" "}
+                <span className="text-base text-gray-500 font-medium">
+                  RVTK
+                </span>
+              </div>
+            ) : (
+              <div className="mt-5 font-black text-5xl text-gray-900">
+                0{" "}
+                <span className="text-base text-gray-500 font-medium">
+                  RVTK
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
@@ -160,9 +168,16 @@ export default function Home() {
               <div className="mt-1 font-medium text-gray-500 text-sm">
                 Tokens you poses in your account
               </div>
-              {balance && (
+              {balance ? (
                 <div className="mt-5 font-black text-5xl text-gray-900">
-                  {balance.toString()}{" "}
+                  {numeral(balance).format("0 a").toUpperCase()}
+                  <span className="text-base text-gray-500 font-medium">
+                    RVTK
+                  </span>
+                </div>
+              ) : (
+                <div className="mt-5 font-black text-5xl text-gray-900">
+                  0{" "}
                   <span className="text-base text-gray-500 font-medium">
                     RVTK
                   </span>
@@ -188,20 +203,21 @@ export default function Home() {
               className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               <svg
-                className="mx-auto h-12 w-12 text-gray-400"
-                stroke="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 48 48"
-                aria-hidden="true"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-full h-10 opacity-60 text-primary-600"
               >
                 <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 14v20c0 4.418 7.163 8 16 8 1.381 0 2.721-.087 4-.252M8 14c0 4.418 7.163 8 16 8s16-3.582 16-8M8 14c0-4.418 7.163-8 16-8s16 3.582 16 8m0 0v14m0-4c0 4.418-7.163 8-16 8S8 28.418 8 24m32 10v6m0 0v6m0-6h6m-6 0h-6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span className="mt-2 block text-sm font-semibold text-gray-900">
+
+              <span className="mt-2 block text-sm font-semibold text-gray-600">
                 Create a new bounty
               </span>
             </Link>

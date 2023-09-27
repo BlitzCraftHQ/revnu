@@ -8,13 +8,8 @@ import {
 import { useContractRead, useContractWrite } from "wagmi";
 import DEPLOYED_CONTRACTS from "@/utilities/contractDetails";
 import ApplicationLayout from "@/components/Utilities/ApplicationLayout";
-import { parseEther } from "ethers";
 import { useAccount } from "wagmi";
 import { Dialog, Transition } from "@headlessui/react";
-
-function classNames(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
-}
 
 const actionMethods = [
   { id: "like", title: "Like" },
@@ -47,7 +42,7 @@ export default function CreateBounty() {
     }));
   };
 
-  let appovedAmt = inputs.reward;
+  let approvedAmt = inputs.reward;
 
   const {
     data: approveData,
@@ -88,13 +83,9 @@ export default function CreateBounty() {
   });
 
   //Approve Tokens
-  const handleApprove = (appovedAmt) => {
-    console.log(appovedAmt);
+  const handleApprove = (approvedAmt) => {
     approveTokens({
-      args: [
-        DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
-        parseEther(appovedAmt.toString()),
-      ],
+      args: [DEPLOYED_CONTRACTS.REVNU_REGISTRY.address, approvedAmt],
     });
     if (isApproveSuccess) setOpen(false);
   };
@@ -116,7 +107,6 @@ export default function CreateBounty() {
           inputs.reward,
         ],
       });
-      console.log(data);
     }
   };
 
@@ -333,7 +323,7 @@ export default function CreateBounty() {
                           className="block w-full mt-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           placeholder="0"
                           onChange={(e) =>
-                            (appovedAmt = parseInt(e.target.value))
+                            (approvedAmt = parseInt(e.target.value))
                           }
                         />
                       </div>
@@ -342,7 +332,7 @@ export default function CreateBounty() {
                       <button
                         type="button"
                         className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                        onClick={() => handleApprove(appovedAmt)}
+                        onClick={() => handleApprove(approvedAmt)}
                       >
                         Approve
                       </button>

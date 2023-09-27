@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useContractRead, useContractWrite } from "wagmi";
 import axios from "axios";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 export default function Bounties() {
   const [bounties, setBounties] = useState<any>([]);
@@ -29,7 +30,6 @@ export default function Bounties() {
     if (lastBountyId) {
       let bounties = range(parseInt(lastBountyId));
       setBounties(bounties);
-      console.log("Last Bounty", bounties);
     }
   }, [lastBountyId]);
 
@@ -97,8 +97,6 @@ function BountyCard({ bountyId, key }: any) {
       claimErrorMessage = claimErrorMessage?.message;
 
       if (claimErrorMessage.includes("Bounty already claimed by user")) {
-        console.log("error");
-
         setErrorMessage("Bounty already claimed by user");
       }
     }
@@ -188,10 +186,9 @@ function BountyCard({ bountyId, key }: any) {
               },
             }
           );
-          console.log(channelRespose.data.items);
+
           if (channelRespose.data.items != undefined) {
             const channel = channelRespose.data.items[0];
-            console.log(channel.id);
 
             if (channel) {
               const apiUrl =
@@ -314,8 +311,8 @@ function BountyCard({ bountyId, key }: any) {
               <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                 Action ID
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
-                {bounty[2].toString()}
+              <td className="whitespace-nowrap px-3 py-4 text-sm underline text-gray-900 text-right">
+                <Link href={bounty[2].toString()}>{bounty[2].toString()}</Link>
               </td>
             </tr>
             <tr>
