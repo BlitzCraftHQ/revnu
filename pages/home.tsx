@@ -7,6 +7,7 @@ import numeral from "numeral";
 import ApplicationLayout from "@/components/Utilities/ApplicationLayout";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Link from "next/link";
+import { formatEther } from "viem";
 
 export default function Home() {
   const { address } = useAccount();
@@ -170,7 +171,7 @@ export default function Home() {
               </div>
               {balance ? (
                 <div className="mt-5 font-black text-5xl text-gray-900">
-                  {numeral(balance).format("0 a").toUpperCase()}
+                  {numeral(formatEther(balance)).format("0 a").toUpperCase()}
                   <span className="text-base text-gray-500 font-medium">
                     RVTK
                   </span>
@@ -200,7 +201,7 @@ export default function Home() {
           {showEmptyState && (
             <Link
               href={"create-bounty"}
-              className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="relative block w-full mt-2 rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -10,6 +10,7 @@ import DEPLOYED_CONTRACTS from "@/utilities/contractDetails";
 import ApplicationLayout from "@/components/Utilities/ApplicationLayout";
 import { useAccount } from "wagmi";
 import { Dialog, Transition } from "@headlessui/react";
+import { formatEther, parseEther } from "viem";
 
 const actionMethods = [
   { id: "like", title: "Like" },
@@ -93,8 +94,6 @@ export default function CreateBounty() {
   // Submit form
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
-    console.table(inputs);
 
     if (allowanceData < inputs.reward) {
       setOpen(true);
