@@ -47,11 +47,37 @@ export default function Bounties() {
         // customHeaderDescription="Here's a list of all recent proposals created on the Electra
         //     DAO."
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-5 gap-y-5">
-          {bounties.map((bounty, index) => (
-            <BountyCard bountyId={bounty} key={index} />
-          ))}
-        </div>
+        {parseInt(lastBountyId) != 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-5 gap-y-5">
+            {bounties.map((bounty, index) => (
+              <BountyCard bountyId={bounty} key={index} />
+            ))}
+          </div>
+        ) : (
+          <Link
+            href={"create-bounty"}
+            className="bg-zinc-100 relative block w-full mt-2 rounded-lg border-2 border-dashed border-gray-500 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              className="w-full h-10 opacity-60 text-primary-600"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+
+            <span className="mt-2 block text-sm font-semibold text-gray-600">
+              Create a new bounty
+            </span>
+          </Link>
+        )}
       </ApplicationLayout>
     </>
   );
