@@ -4,6 +4,9 @@ import DEPLOYED_CONTRACTS from "@/utilities/contractDetails";
 import { useState, useEffect } from "react";
 import { useContractRead, useContractWrite } from "wagmi";
 import axios from "axios";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { formatEther } from "viem";
 
 export default function Bounties() {
   const [bounties, setBounties] = useState<any>([]);
@@ -28,7 +31,6 @@ export default function Bounties() {
     if (lastBountyId) {
       let bounties = range(parseInt(lastBountyId));
       setBounties(bounties);
-      console.log("Last Bounty", bounties);
     }
   }, [lastBountyId]);
 
@@ -56,6 +58,13 @@ export default function Bounties() {
 }
 
 function BountyCard({ bountyId, key }: any) {
+  const [verificationError, setVerificationError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(
+    "Uh oh! Something went wrong. Please try again."
+  );
+
+  // get bounty data
+
   const {
     data: bounty,
     isError,
@@ -68,10 +77,14 @@ function BountyCard({ bountyId, key }: any) {
     args: [bountyId],
   });
 
+  // claim bounty function
+
   const {
     data: claimData,
-    isClaimLoading,
-    isClaimSuccess,
+    isError: isClaimError,
+    isLoading: isClaimLoading,
+    isSuccess: isClaimSuccess,
+    error,
     write: claimBounty,
   }: any = useContractWrite({
     address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
@@ -79,20 +92,28 @@ function BountyCard({ bountyId, key }: any) {
     functionName: "claimBounty",
   });
 
+  useEffect(() => {
+    if (isClaimError) {
+      let claimErrorMessage: any = error;
+      claimErrorMessage = claimErrorMessage?.message;
+
+      if (claimErrorMessage.includes("Bounty already claimed by user")) {
+        setErrorMessage("Bounty already claimed by user");
+      }
+    }
+  }, [isClaimError, error]);
+
   async function handleVerification(actionLink, actionType, verifiedBountyId) {
-    // actionLink = "https://www.youtube.com/channel/UCeMcCNtvQe6ecVnm_RrWzng";
     let myArray = actionLink.split("//");
     let actionId = myArray[1].split("/").slice(-1)[0];
     const accessToken = localStorage.getItem("token");
 
     switch (actionType) {
       case "like":
-        console.log("like or comment");
         let videoId = actionId.split("=")[1];
-        console.log("video id:", videoId);
 
         try {
-          // Make a GET request to fetch the user's rating (like/dislike) for the video
+          // GET request to fetch the user's rating (like) for the video
           const ratingResponse = await axios.get(
             "https://www.googleapis.com/youtube/v3/videos/getRating",
             {
@@ -103,27 +124,27 @@ function BountyCard({ bountyId, key }: any) {
               },
             }
           );
-          const userRating = ratingResponse.data.items[0]; // Assuming there's only one item
+          const userRating = ratingResponse.data.items[0];
 
           if (userRating) {
             if (userRating.rating === "like") {
-              console.log("The user has liked the video.");
               claimBounty({
                 args: [verifiedBountyId],
               });
             } else {
-              console.log("The user has not rated the video.");
+              setVerificationError(true);
+              setErrorMessage("You have not rated the video.");
             }
           } else {
-            console.log("User rating information not found.");
+            setVerificationError(true);
+            setErrorMessage("User rating information not found");
           }
         } catch (error) {
           console.error("Error:", error.message);
         }
         break;
+
       case "subscribe":
-        console.log("subscribe");
-        console.log("channel id:", actionId);
         const subcribersResponse = await axios.get(
           "https://www.googleapis.com/youtube/v3/subscriptions",
           {
@@ -141,20 +162,20 @@ function BountyCard({ bountyId, key }: any) {
           const subscribedChannelId =
             subcribersResponse.data.items[0].snippet.resourceId.channelId;
           if (subscribedChannelId == actionId) {
-            console.log("user has subscribed");
             claimBounty({
               args: [verifiedBountyId],
             });
           }
         } else {
-          console.log("you have not subscribed");
+          setVerificationError(true);
+          setErrorMessage("You have not subscribed");
         }
         break;
+
       case "comment":
-        console.log("comment");
         try {
           let videoId = actionId.split("=")[1];
-          console.log("video id:", videoId);
+
           const channelRespose = await axios.get(
             "https://www.googleapis.com/youtube/v3/channels",
             {
@@ -166,14 +187,11 @@ function BountyCard({ bountyId, key }: any) {
               },
             }
           );
-          console.log(channelRespose.data.items);
+
           if (channelRespose.data.items != undefined) {
             const channel = channelRespose.data.items[0];
-            console.log(channel.id);
 
             if (channel) {
-              console.log("The user has a channel.");
-
               const apiUrl =
                 "https://www.googleapis.com/youtube/v3/commentThreads";
 
@@ -208,15 +226,16 @@ function BountyCard({ bountyId, key }: any) {
                     });
 
                     if (userHasCommented) {
-                      console.log("The user has commented on the video.");
                       claimBounty({
                         args: [verifiedBountyId],
                       });
                     } else {
-                      console.log("The user has not commented on the video.");
+                      setVerificationError(true);
+                      setErrorMessage("You have not commented on the video");
                     }
                   } else {
-                    console.log("No comment threads found for the video.");
+                    setVerificationError(true);
+                    setErrorMessage("No comment threads found for the video");
                   }
                 })
                 .catch((error) => {
@@ -224,10 +243,12 @@ function BountyCard({ bountyId, key }: any) {
                   console.error("Error fetching comment threads:", error);
                 });
             } else {
-              console.log("The user does not have a channel.");
+              setVerificationError(true);
+              setErrorMessage("Your channel is not found");
             }
           } else {
-            console.log("no channel");
+            setVerificationError(true);
+            setErrorMessage("Your channel is not found");
           }
         } catch (error) {
           console.log(error);
@@ -244,20 +265,7 @@ function BountyCard({ bountyId, key }: any) {
   ) : (
     <div key={key} className="bg-white border border-gray-200 rounded-md">
       <div className="px-5 sm:px-6 lg:px-8 pt-5 font-black text-xl">
-        Bounty Information
-        {bounty[5] == bounty[4] && (
-          <div className="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-zinc-900 ring-1 ring-inset ring-zinc-200 capitalize">
-            <svg
-              className={`h-1.5 w-1.5 fill-green-500
-                    }`}
-              viewBox="0 0 6 6"
-              aria-hidden="true"
-            >
-              <circle cx={3} cy={3} r={3} />
-            </svg>
-            Claimed
-          </div>
-        )}
+        Bounty #{bounty[0].toString()}
       </div>
 
       {/* Votes Progress Bar Start */}
@@ -286,14 +294,6 @@ function BountyCard({ bountyId, key }: any) {
           <tbody className="divide-y divide-gray-200">
             <tr>
               <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                Bounty ID
-              </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
-                {bounty[0].toString()}
-              </td>
-            </tr>
-            <tr>
-              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                 Bounty Creator
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
@@ -304,8 +304,8 @@ function BountyCard({ bountyId, key }: any) {
               <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                 Action ID
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
-                {bounty[2].toString()}
+              <td className="whitespace-nowrap px-3 py-4 text-sm underline text-gray-900 text-right">
+                <Link href={bounty[2].toString()}>{bounty[2].toString()}</Link>
               </td>
             </tr>
             <tr>
@@ -321,28 +321,18 @@ function BountyCard({ bountyId, key }: any) {
                 Action Rewards
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
-                {parseFloat(bounty[6]) / parseFloat(bounty[4])}
+                {parseFloat(formatEther(bounty[6])) /
+                  parseFloat(bounty[4].toString())}
               </td>
             </tr>
           </tbody>
         </table>
       </div>
       {/* Addresses End */}
-      {/* {bounty[5] === bounty[4] && (
-        <div className="px-5 sm:px-6 pb-5">
-          <button
-            className="w-full rounded-md bg-primary-400 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
-            onClick={() =>
-              handleVerification(bounty[2].toString(), bounty[3].toString())
-            }
-          >
-            Validate
-          </button>
-        </div>
-      )} */}
-      <div className="px-5 sm:px-6 pb-5">
+      <div className="px-5 sm:px-6 pb-4">
         <button
-          className="w-full rounded-md bg-primary-400 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
+          disabled={bounty[4] === bounty[5]}
+          className="disabled:opacity-50 disabled:bg-zinc-800 w-full rounded-md bg-primary-400 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
           onClick={() =>
             handleVerification(
               bounty[2].toString(),
@@ -351,9 +341,47 @@ function BountyCard({ bountyId, key }: any) {
             )
           }
         >
-          Validate
+          {bounty[4] === bounty[5]
+            ? "Bounty Completed"
+            : isClaimLoading
+            ? "Claiming"
+            : isClaimSuccess
+            ? "Claimed"
+            : "Validate"}
         </button>
       </div>
+      {isClaimSuccess && (
+        <div className="mb-5 mx-5 sm:col-span-2 rounded-md bg-green-600 px-4 py-3">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <CheckCircleIcon
+                className="h-5 w-5 text-green-300"
+                aria-hidden="true"
+              />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-green-50">
+                Claimed Successfully!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      {(isClaimError || verificationError) && (
+        <div className="mb-5 mx-5 sm:col-span-2 rounded-md bg-red-600 px-4 py-3">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <XCircleIcon
+                className="h-5 w-5 text-red-300"
+                aria-hidden="true"
+              />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-red-50">{errorMessage}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

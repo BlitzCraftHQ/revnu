@@ -30,11 +30,11 @@ const navigation = [
     href: "/bounties",
     icon: HomeIcon,
   },
-  {
-    name: "Stake",
-    href: "/stake",
-    icon: CursorArrowRippleIcon,
-  },
+  // {
+  //   name: "Stake",
+  //   href: "/stake",
+  //   icon: CursorArrowRippleIcon,
+  // },
   // {
   //   name: "Top-Up Wallet",
   //   href: "/top-up",

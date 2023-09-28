@@ -1,20 +1,16 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import {
   CheckCircleIcon,
   XCircleIcon,
-  CheckIcon,
+  ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useContractRead, useContractWrite } from "wagmi";
 import DEPLOYED_CONTRACTS from "@/utilities/contractDetails";
 import ApplicationLayout from "@/components/Utilities/ApplicationLayout";
-import { parseEther } from "ethers";
 import { useAccount } from "wagmi";
 import { Dialog, Transition } from "@headlessui/react";
-
-function classNames(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { formatEther, parseEther } from "viem";
 
 const actionMethods = [
   { id: "like", title: "Like" },
@@ -23,9 +19,6 @@ const actionMethods = [
 ];
 
 export default function CreateBounty() {
-  const [Loading, setLoading] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showFailed, setShowFailed] = useState(false);
   const [open, setOpen] = useState(false);
 
   const cancelButtonRef = useRef(null);
@@ -50,7 +43,7 @@ export default function CreateBounty() {
     }));
   };
 
-  let appovedAmt = inputs.reward;
+  let approvedAmt = inputs.reward;
 
   const {
     data: approveData,
@@ -79,6 +72,7 @@ export default function CreateBounty() {
     data,
     isLoading,
     isSuccess,
+    isError,
     write: createBounty,
   } = useContractWrite({
     address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
@@ -90,25 +84,22 @@ export default function CreateBounty() {
   });
 
   //Approve Tokens
-  const handleApprove = () => {
-    console.log(appovedAmt);
+  const handleApprove = (approvedAmt) => {
     approveTokens({
       args: [
         DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
-        parseEther(inputs.reward.toString()),
+        parseEther(approvedAmt.toString()),
       ],
     });
-    if (isApproveSuccess) setOpen(false);
   };
+
+  useEffect(() => {
+    if (isApproveSuccess) setOpen(false);
+  }, [isApproveSuccess]);
 
   // Submit form
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    setLoading(true);
-    setShowSuccess(false);
-    setShowFailed(false);
-
-    console.table(inputs);
 
     if (allowanceData < inputs.reward) {
       setOpen(true);
@@ -118,50 +109,9 @@ export default function CreateBounty() {
           inputs.actionId,
           inputs.actionType,
           inputs.actionCount,
-          inputs.reward,
+          parseEther(inputs.reward.toString()),
         ],
       });
-      console.log(data);
-    }
-
-    // approveTokens({
-    //   args: [
-    //     DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
-    //     parseEther(inputs.reward.toString()),
-    //   ],
-    // });
-
-    // if (isApproveSuccess) {
-    //   allowanceCheck({
-    //     args: [address, DEPLOYED_CONTRACTS.REVNU_REGISTRY.address],
-    //   });
-    //   if (isAllowanceSuccess) console.log(allowanceData);
-    // }
-
-    // if (isApproveSuccess) {
-    //   createBounty({
-    //     args: [
-    //       inputs.actionId,
-    //       inputs.actionType,
-    //       inputs.actionCount,
-    //       inputs.reward,
-    //     ],
-    //   });
-    // }
-
-    // if (isApproveSuccess) {
-    //   allowanceCheck({
-    //     args: [address, DEPLOYED_CONTRACTS.REVNU_REGISTRY.address],
-    //   });
-    //   if (isAllowanceSuccess) console.log(allowanceData);
-    // }
-
-    if (isSuccess) {
-      setLoading(false);
-      setShowSuccess(true);
-    } else {
-      setLoading(false);
-      setShowSuccess(false);
     }
   };
 
@@ -175,49 +125,6 @@ export default function CreateBounty() {
           name="title"
           content="Notifications - Electra | Push Notification Service for the Neo Blockchain"
         />
-        <meta
-          name="description"
-          content="Stay informed and in-the-know with real-time push
-            notifications on transactions, smart contracts, and network
-            developments. Empower your Neo experience with Electra's
-            timely alerts, ensuring you never miss a beat on the Neo
-            Blockchain."
-        />
-
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://neocast.blitzcrafthq.com" />
-        <meta
-          property="og:title"
-          content="Notifications - Electra | Push Notification Service for the Neo Blockchain"
-        />
-        <meta
-          property="og:description"
-          content="Stay informed and in-the-know with real-time push
-            notifications on transactions, smart contracts, and network
-            developments. Empower your Neo experience with Electra's
-            timely alerts, ensuring you never miss a beat on the Neo
-            Blockchain."
-        />
-        <meta property="og:image" content="/meta-image.jpg" />
-
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta
-          property="twitter:url"
-          content="https://neocast.blitzcrafthq.com/"
-        />
-        <meta
-          property="twitter:title"
-          content="Notifications - Electra | Push Notification Service for the Neo Blockchain"
-        />
-        <meta
-          property="twitter:description"
-          content="Stay informed and in-the-know with real-time push
-            notifications on transactions, smart contracts, and network
-            developments. Empower your Neo experience with Electra's
-            timely alerts, ensuring you never miss a beat on the Neo
-            Blockchain."
-        />
-        <meta property="twitter:image" content="/meta-image.jpg" />
       </Head>
 
       <ApplicationLayout
@@ -305,11 +212,11 @@ export default function CreateBounty() {
                 onChange={handleInput}
                 value={inputs.reward}
                 className="block w-full border-0 p-0 text-zinc-900 placeholder:text-zinc-400 focus:ring-0 sm:text-sm sm:leading-6"
-                placeholder="Y5NBMBH75HU4GB5JH"
+                placeholder="0"
               />
             </div>
 
-            {showSuccess && (
+            {isSuccess && (
               <div className="mt-6 sm:col-span-2 rounded-md bg-green-600 px-4 py-3">
                 <div className="flex">
                   <div className="flex-shrink-0">
@@ -326,7 +233,7 @@ export default function CreateBounty() {
                 </div>
               </div>
             )}
-            {showFailed && (
+            {isError && (
               <div className="mt-6 sm:col-span-2 rounded-md bg-red-600 px-4 py-3">
                 <div className="flex">
                   <div className="flex-shrink-0">
@@ -348,11 +255,11 @@ export default function CreateBounty() {
               <button
                 type="submit"
                 className={`rounded-md bg-primary-400 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400" ${
-                  Loading && "opacity-50 cursor-progress"
+                  isLoading && "opacity-50 cursor-progress"
                 }`}
-                disabled={Loading}
+                disabled={isLoading}
               >
-                {Loading ? (
+                {isLoading ? (
                   "Creating Bounty"
                 ) : (
                   <span className="flex justify-center gap-x-2">
@@ -395,9 +302,9 @@ export default function CreateBounty() {
                 >
                   <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                     <div>
-                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                        <CheckIcon
-                          className="h-6 w-6 text-green-600"
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100">
+                        <ExclamationCircleIcon
+                          className="h-6 w-6 text-yellow-500"
                           aria-hidden="true"
                         />
                       </div>
@@ -421,7 +328,7 @@ export default function CreateBounty() {
                           className="block w-full mt-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           placeholder="0"
                           onChange={(e) =>
-                            (appovedAmt = parseInt(e.target.value))
+                            (approvedAmt = parseInt(e.target.value))
                           }
                         />
                       </div>
@@ -429,8 +336,8 @@ export default function CreateBounty() {
                     <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                       <button
                         type="button"
-                        className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                        onClick={handleApprove}
+                        className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                        onClick={() => handleApprove(approvedAmt)}
                       >
                         Approve
                       </button>
