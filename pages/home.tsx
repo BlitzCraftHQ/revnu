@@ -146,7 +146,7 @@ export default function Home() {
             </div>
             {earnings ? (
               <div className="mt-5 font-black text-5xl text-gray-900">
-                {numeral(earnings).format("0 a").toUpperCase()}{" "}
+                {numeral(formatEther(earnings)).format("0 a").toUpperCase()}{" "}
                 <span className="text-base text-gray-500 font-medium">
                   RVTK
                 </span>
@@ -171,7 +171,7 @@ export default function Home() {
               </div>
               {balance ? (
                 <div className="mt-5 font-black text-5xl text-gray-900">
-                  {numeral(formatEther(balance)).format("0 a").toUpperCase()}
+                  {numeral(formatEther(balance)).format("0 a").toUpperCase()}{" "}
                   <span className="text-base text-gray-500 font-medium">
                     RVTK
                   </span>
@@ -248,7 +248,7 @@ function BountyCard({ bountyId, key, userOnly = false }: any) {
     : userOnly && address.toString() == bounty[1].toString() && (
         <div key={key} className={`bg-white border border-gray-200 rounded-md`}>
           <div className="px-5 sm:px-6 lg:px-8 pt-5 font-black text-xl">
-            Bounty Information
+            Bounty #{bounty[0].toString()}
           </div>
           {/* Votes Progress Bar Start */}
           <div className="mt-5 px-5 sm:px-6">
@@ -274,14 +274,6 @@ function BountyCard({ bountyId, key, userOnly = false }: any) {
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <table className="min-w-full divide-y divide-gray-300">
               <tbody className="divide-y divide-gray-200">
-                <tr>
-                  <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                    Bounty ID
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
-                    {bounty[0].toString()}
-                  </td>
-                </tr>
                 <tr>
                   <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                     Bounty Creator
@@ -311,7 +303,8 @@ function BountyCard({ bountyId, key, userOnly = false }: any) {
                     Action Rewards
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 text-right">
-                    {parseFloat(bounty[6]) / parseFloat(bounty[4])}
+                    {parseFloat(formatEther(bounty[6])) /
+                      parseFloat(bounty[4].toString())}
                   </td>
                 </tr>
               </tbody>

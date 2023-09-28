@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import {
   CheckCircleIcon,
@@ -86,10 +86,16 @@ export default function CreateBounty() {
   //Approve Tokens
   const handleApprove = (approvedAmt) => {
     approveTokens({
-      args: [DEPLOYED_CONTRACTS.REVNU_REGISTRY.address, approvedAmt],
+      args: [
+        DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
+        parseEther(approvedAmt.toString()),
+      ],
     });
-    if (isApproveSuccess) setOpen(false);
   };
+
+  useEffect(() => {
+    if (isApproveSuccess) setOpen(false);
+  }, [isApproveSuccess]);
 
   // Submit form
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -103,7 +109,7 @@ export default function CreateBounty() {
           inputs.actionId,
           inputs.actionType,
           inputs.actionCount,
-          inputs.reward,
+          parseEther(inputs.reward.toString()),
         ],
       });
     }
@@ -206,7 +212,7 @@ export default function CreateBounty() {
                 onChange={handleInput}
                 value={inputs.reward}
                 className="block w-full border-0 p-0 text-zinc-900 placeholder:text-zinc-400 focus:ring-0 sm:text-sm sm:leading-6"
-                placeholder="Y5NBMBH75HU4GB5JH"
+                placeholder="0"
               />
             </div>
 
