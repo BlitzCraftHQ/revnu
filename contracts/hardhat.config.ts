@@ -37,6 +37,8 @@ const config: HardhatUserConfig = {
       url: "https://rpc.pegotest.net/",
       accounts: [PRIVATE_KEY],
       chainId: 123456,
+      gas: 500000000000,
+      gasPrice: 500000000000,
       allowUnlimitedContractSize: true,
     },
     pegoMainNet: {
