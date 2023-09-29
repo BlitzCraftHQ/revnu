@@ -119,12 +119,8 @@ export default function CreateBounty() {
     <>
       <Head>
         <title>
-          Dashboard - Revnu | Democratizing EV Technology using the Blockchain
+          Dashboard - Revnu | Like, Comment & Subscribe to earn Pego tokens
         </title>
-        <meta
-          name="title"
-          content="Notifications - Electra | Push Notification Service for the Neo Blockchain"
-        />
       </Head>
 
       <ApplicationLayout

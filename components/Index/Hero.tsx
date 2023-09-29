@@ -4,12 +4,15 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 export default function Hero() {
   return (
     <>
-      <div className="relative isolate overflow-hidden bg-primary-900 pb-16 pt-0 sm:pb-20">
+      <div
+        id="home"
+        className="relative isolate overflow-hidden bg-primary-900 pb-16 pt-0 sm:pb-20"
+      >
         <Image
-          src="/hero-darkened.webp"
-          alt="EV Car"
-          height={1037}
-          width={1920}
+          src="/hero.jpeg"
+          alt="YouTuber"
+          height={1268}
+          width={2126}
           className="absolute inset-0 -z-10 h-full w-full object-cover backdrop-opacity-20 backdrop-invert bg-primary/50"
         />
         <div
@@ -28,38 +31,30 @@ export default function Hero() {
           <div className="mx-auto max-w-3xl py-32 sm:py-48 lg:pt-48 lg:pb-56">
             <div className="hidden sm:mb-8 sm:flex sm:justify-center">
               <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-zinc-400 ring-1 ring-white/10 hover:ring-white/20">
-                Electra is powered by{" "}
+                Revnu is powered by{" "}
                 <a
-                  href="https://www.althea.net/blockchain"
+                  href="https://pego.network/"
                   className="font-semibold text-white"
                   target="_blank"
                 >
                   <span className="absolute inset-0" aria-hidden="true" />
-                  Althea&apos;s L1 Blockhain{" "}
-                  <span aria-hidden="true">&rarr;</span>
+                  Pego Network <span aria-hidden="true">&rarr;</span>
                 </a>
               </div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-black tracking-tight text-white sm:text-6xl space-y-3">
                 <div>
-                  <span className="text-primary-400">Lease</span> your EV
-                  chargers.
-                </div>
-                <div>
-                  <span className="text-primary-400">Recharge</span> your EV
-                  vehicles.
-                </div>
-                <div>
-                  <span className="text-primary-400">Earn</span> ElectraCoins.
+                  <span className="text-primary-600">
+                    Like, Comment & Subscribe
+                  </span>{" "}
+                  while earning Pego tokens!
                 </div>
               </div>
               <p className="mt-6 text-lg leading-8 text-zinc-300">
-                Electra is a decentralized platform that aims to democratize the
-                usage of EV charging stations by enabling anyone with an EV
-                charging unit to lease it to anyone with an electric vehicle,
-                thereby helping them earn ElectraCoins using an anonymized &
-                secure network on the Althea blockchain.
+                Revnu: Elevate your YouTube experience! Earn valuable tokens for
+                liking, commenting, and subscribing. Join us now and be part of
+                the future of content engagement.
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <ConnectButton />

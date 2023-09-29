@@ -86,7 +86,7 @@ export default function App({ Component, pageProps }: AppProps) {
   );
 
   const { connectors } = getDefaultWallets({
-    appName: "Electra",
+    appName: "",
     projectId: "2588db3d04914636093b01d564610991",
     chains,
   });
@@ -109,7 +109,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <RainbowKitProvider
               chains={chains}
               theme={lightTheme({
-                accentColor: "#10b981",
+                accentColor: "#9333ea",
                 accentColorForeground: "white",
                 borderRadius: "medium",
                 fontStack: "system",

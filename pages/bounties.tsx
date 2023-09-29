@@ -38,7 +38,7 @@ export default function Bounties() {
     <>
       <Head>
         <title>
-          Dashboard - Electra | Democratizing EV Technology using the Blockchain
+          Dashboard - Revnu | Like, Comment & Subscribe to earn Pego tokens
         </title>
       </Head>
 

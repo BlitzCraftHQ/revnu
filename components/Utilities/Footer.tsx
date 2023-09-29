@@ -66,9 +66,9 @@ export default function Footer() {
         </p>
 
         <div className="mt-12 max-w-2xl text-xl sm:text-2xl mx-auto text-center font-semibold text-zinc-500">
-          Building Electra has been an incredibly fun effort across many people
-          at Electra and our frens at other companies. We&apos;re always looking
-          to make Electra better, so please let us know how we can improve.
+          Building Revnu has been an incredibly fun effort across many people at
+          Revnu and our frens at other companies. We&apos;re always looking to
+          make Revnu better, so please let us know how we can improve.
         </div>
 
         <nav
@@ -102,7 +102,7 @@ export default function Footer() {
         </div>
         <p className="mt-10 text-center text-md leading-5 text-zinc-500">
           &copy; 2023 BlitzCraft Labs. All rights reserved. <br />
-          Electra and BlitzCraft Labs are trademarks of BlitzCraft Technologies.
+          Revnu and BlitzCraft Labs are trademarks of BlitzCraft Technologies.
         </p>
       </div>
     </footer>
