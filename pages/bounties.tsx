@@ -133,6 +133,8 @@ function BountyCard({ bountyId, key }: any) {
     let myArray = actionLink.split("//");
     let actionId = myArray[1].split("/").slice(-1)[0];
     const accessToken = localStorage.getItem("token");
+    const apikey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
+    console.log(apikey);
 
     switch (actionType) {
       case "like":
@@ -144,7 +146,7 @@ function BountyCard({ bountyId, key }: any) {
             "https://www.googleapis.com/youtube/v3/videos/getRating",
             {
               params: {
-                key: "AIzaSyD2wZfkQuijKkXhKD_CGjeP986xkm7dY-8",
+                key: apikey,
                 id: videoId,
                 access_token: accessToken,
               },
@@ -175,7 +177,7 @@ function BountyCard({ bountyId, key }: any) {
           "https://www.googleapis.com/youtube/v3/subscriptions",
           {
             params: {
-              key: "AIzaSyD2wZfkQuijKkXhKD_CGjeP986xkm7dY-8",
+              key: apikey,
               part: "snippet",
               forChannelId: actionId,
               mine: true,
@@ -206,7 +208,7 @@ function BountyCard({ bountyId, key }: any) {
             "https://www.googleapis.com/youtube/v3/channels",
             {
               params: {
-                key: "AIzaSyD2wZfkQuijKkXhKD_CGjeP986xkm7dY-8",
+                key: apikey,
                 part: "snippet",
                 mine: true, // Get the channel for the authenticated user
                 access_token: accessToken,
@@ -225,7 +227,7 @@ function BountyCard({ bountyId, key }: any) {
               axios
                 .get(apiUrl, {
                   params: {
-                    key: "AIzaSyD2wZfkQuijKkXhKD_CGjeP986xkm7dY-8",
+                    key: apikey,
                     part: "snippet",
                     videoId: videoId,
                     access_token: accessToken,

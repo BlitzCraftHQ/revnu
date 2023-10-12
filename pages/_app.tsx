@@ -11,49 +11,8 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import "@rainbow-me/rainbowkit/styles.css";
 import "@/styles/globals.css";
 import "@/styles/index.scss";
-
-// const AltheaEVM = {
-//   id: 417834,
-//   name: "AltheaEVM DevNet",
-//   network: "AltheaEVM DevNet",
-//   iconUrl:
-//     "https://cdn.dorahacks.io/static/files/188c028468557368d12717c46b1bd63e.jpg",
-//   iconBackground: "#fff",
-//   nativeCurrency: {
-//     decimals: 18,
-//     name: "AltheaEVM GAS",
-//     symbol: "GAS",
-//   },
-//   rpcUrls: {
-//     public: { http: ["https://althea.zone:8545/"] },
-//     default: { http: ["https://althea.zone:8545/"] },
-//   },
-//   blockExplorers: {
-//     default: { name: "AltheaTrace", url: "https://evm.ngd.network/" },
-//   },
-//   testnet: false,
-// };
-const MumbaiEVM = {
-  id: 80001,
-  name: "Mumbai",
-  network: "Mumbai Testnet",
-  iconUrl:
-    "https://cdn.dorahacks.io/static/files/188c028468557368d12717c46b1bd63e.jpg",
-  iconBackground: "#fff",
-  nativeCurrency: {
-    name: "MATIC",
-    symbol: "MATIC",
-    decimals: 18,
-  },
-  rpcUrls: {
-    public: { http: ["https://polygon-mumbai-bor.publicnode.com"] },
-    default: { http: ["https://polygon-mumbai-bor.publicnode.com"] },
-  },
-  blockExplorers: {
-    default: { name: "polygonscan", url: "https://mumbai.polygonscan.com" },
-  },
-  testnet: true,
-};
+const dotenv = require("dotenv");
+dotenv.config();
 
 const pegoTestNet = {
   id: 123456,
