@@ -83,7 +83,7 @@ export default function CreateBounty() {
   });
 
   //Approve Tokens
-  const handleApprove = (approvedAmt) => {
+  const handleApprove = (approvedAmt: number) => {
     approveTokens({
       args: [
         DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,

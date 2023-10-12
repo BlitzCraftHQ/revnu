@@ -49,7 +49,7 @@ export default function Bounties() {
       >
         {parseInt(lastBountyId) != 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-5 gap-y-5">
-            {bounties.map((bounty, index) => (
+            {bounties.map((bounty: number[], index: number) => (
               <BountyCard bountyId={bounty} key={index} />
             ))}
           </div>
