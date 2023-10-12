@@ -23,7 +23,7 @@ export default function Home() {
     isLoading,
     isSuccess,
   }: any = useContractRead({
-    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
+    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address as `0x${string}`,
     abi: DEPLOYED_CONTRACTS.REVNU_REGISTRY.abi,
     functionName: "getLatestBountyId",
   });
@@ -36,7 +36,7 @@ export default function Home() {
     isBalanceLoading,
     isBalanceSuccess,
   }: any = useContractRead({
-    address: DEPLOYED_CONTRACTS.REVNU_TOKEN.address,
+    address: DEPLOYED_CONTRACTS.REVNU_TOKEN.address as `0x${string}`,
     abi: DEPLOYED_CONTRACTS.REVNU_TOKEN.abi,
     functionName: "balanceOf",
     args: [address],
@@ -48,7 +48,7 @@ export default function Home() {
     isEarningsLoading,
     isEarningsSuccess,
   }: any = useContractRead({
-    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
+    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address as `0x${string}`,
     abi: DEPLOYED_CONTRACTS.REVNU_REGISTRY.abi,
     functionName: "claimEarnings",
     args: [address],
@@ -183,7 +183,7 @@ function BountyCard({ bountyId, key, userOnly = false }: any) {
     isLoading,
     isSuccess,
   }: any = useContractRead({
-    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
+    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address as `0x${string}`,
     abi: DEPLOYED_CONTRACTS.REVNU_REGISTRY.abi,
     functionName: "bountyRegistry",
     args: [bountyId],

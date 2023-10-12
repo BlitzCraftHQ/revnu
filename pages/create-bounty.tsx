@@ -51,7 +51,7 @@ export default function CreateBounty() {
     isSuccess: isApproveSuccess,
     write: approveTokens,
   } = useContractWrite({
-    address: DEPLOYED_CONTRACTS.REVNU_TOKEN.address,
+    address: DEPLOYED_CONTRACTS.REVNU_TOKEN.address as `0x${string}`,
     abi: DEPLOYED_CONTRACTS.REVNU_TOKEN.abi,
     functionName: "approve",
   });
@@ -60,9 +60,8 @@ export default function CreateBounty() {
     data: allowanceData,
     isLoading: isAllowanceLoading,
     isSuccess: isAllowanceSuccess,
-    write: allowanceCheck,
   } = useContractRead({
-    address: DEPLOYED_CONTRACTS.REVNU_TOKEN.address,
+    address: DEPLOYED_CONTRACTS.REVNU_TOKEN.address as `0x${string}`,
     abi: DEPLOYED_CONTRACTS.REVNU_TOKEN.abi,
     functionName: "allowance",
     args: [address, DEPLOYED_CONTRACTS.REVNU_REGISTRY.address],
@@ -75,7 +74,7 @@ export default function CreateBounty() {
     isError,
     write: createBounty,
   } = useContractWrite({
-    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
+    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address as `0x${string}`,
     abi: DEPLOYED_CONTRACTS.REVNU_REGISTRY.abi,
     functionName: "createBounty",
     onError(error) {

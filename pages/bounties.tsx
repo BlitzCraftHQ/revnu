@@ -19,7 +19,7 @@ export default function Bounties() {
     isLoading,
     isSuccess,
   }: any = useContractRead({
-    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
+    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address as `0x${string}`,
     abi: DEPLOYED_CONTRACTS.REVNU_REGISTRY.abi,
     functionName: "getLatestBountyId",
   });
@@ -97,7 +97,7 @@ function BountyCard({ bountyId, key }: any) {
     isLoading,
     isSuccess,
   }: any = useContractRead({
-    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
+    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address as `0x${string}`,
     abi: DEPLOYED_CONTRACTS.REVNU_REGISTRY.abi,
     functionName: "bountyRegistry",
     args: [bountyId],
@@ -113,7 +113,7 @@ function BountyCard({ bountyId, key }: any) {
     error,
     write: claimBounty,
   }: any = useContractWrite({
-    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address,
+    address: DEPLOYED_CONTRACTS.REVNU_REGISTRY.address as `0x${string}`,
     abi: DEPLOYED_CONTRACTS.REVNU_REGISTRY.abi,
     functionName: "claimBounty",
   });
