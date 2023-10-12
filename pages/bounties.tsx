@@ -129,12 +129,15 @@ function BountyCard({ bountyId, key }: any) {
     }
   }, [isClaimError, error]);
 
-  async function handleVerification(actionLink, actionType, verifiedBountyId) {
+  async function handleVerification(
+    actionLink: string,
+    actionType: string,
+    verifiedBountyId: number
+  ) {
     let myArray = actionLink.split("//");
     let actionId = myArray[1].split("/").slice(-1)[0];
     const accessToken = localStorage.getItem("token");
     const apikey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-    console.log(apikey);
 
     switch (actionType) {
       case "like":
@@ -239,19 +242,21 @@ function BountyCard({ bountyId, key }: any) {
 
                   if (commentThreads) {
                     // Check if the authenticated user's comment is among the comment threads
-                    const userHasCommented = commentThreads.some((thread) => {
-                      if (thread.snippet.topLevelComment) {
-                        const commentUserId =
-                          thread.snippet.topLevelComment.snippet.authorChannelId
-                            .value;
+                    const userHasCommented = commentThreads.some(
+                      (thread: any) => {
+                        if (thread.snippet.topLevelComment) {
+                          const commentUserId =
+                            thread.snippet.topLevelComment.snippet
+                              .authorChannelId.value;
 
-                        // Optionally, you can check if the comment was made by the authenticated user
-                        if (channel.id && commentUserId === channel.id) {
-                          return true;
+                          // Optionally, you can check if the comment was made by the authenticated user
+                          if (channel.id && commentUserId === channel.id) {
+                            return true;
+                          }
                         }
+                        return false;
                       }
-                      return false;
-                    });
+                    );
 
                     if (userHasCommented) {
                       claimBounty({
