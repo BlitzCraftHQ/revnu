@@ -100,7 +100,7 @@ export default function CreateBounty() {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    if (allowanceData < inputs.reward) {
+    if ((allowanceData as any) < inputs.reward) {
       setOpen(true);
     } else {
       createBounty({

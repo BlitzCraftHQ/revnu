@@ -170,7 +170,7 @@ function BountyCard({ bountyId, key }: any) {
             setVerificationError(true);
             setErrorMessage("User rating information not found");
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error("Error:", error.message);
         }
         break;

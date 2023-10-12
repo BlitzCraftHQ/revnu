@@ -11,7 +11,6 @@ import { formatEther } from "viem";
 
 export default function Home() {
   const { address } = useAccount();
-  const [walletAddress, setWalletAddress] = useState(address);
 
   const [bounties, setBounties] = useState<any>([]);
 
@@ -191,7 +190,7 @@ function BountyCard({ bountyId, key, userOnly = false }: any) {
 
   return address && isLoading
     ? "Loading"
-    : userOnly && address.toString() == bounty[1].toString() && (
+    : userOnly && address?.toString() == bounty[1].toString() && (
         <div key={key} className={`bg-white border border-gray-200 rounded-md`}>
           <div className="px-5 sm:px-6 lg:px-8 pt-5 font-black text-xl">
             Bounty #{bounty[0].toString()}
