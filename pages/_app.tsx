@@ -65,18 +65,7 @@ export default function App({ Component, pageProps }: AppProps) {
       {ready ? (
         <GoogleOAuthProvider clientId="276764548749-kp580h77fv3bg9ofoeu5563saggg7jpo.apps.googleusercontent.com">
           <WagmiConfig config={wagmiConfig}>
-            <RainbowKitProvider
-              chains={chains}
-              theme={lightTheme({
-                accentColor: "#9333ea",
-                accentColorForeground: "white",
-                borderRadius: "medium",
-                fontStack: "system",
-                overlayBlur: "small",
-              })}
-            >
-              <Component {...pageProps} />
-            </RainbowKitProvider>
+            <Component {...pageProps} />
           </WagmiConfig>
         </GoogleOAuthProvider>
       ) : null}

@@ -3,8 +3,8 @@ import { Disclosure } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
+import { InjectedConnector } from "wagmi/connectors/injected";
 import Footer from "@/components/Utilities/Footer";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 
@@ -23,6 +23,9 @@ interface Props {
 
 export default function Layout({ children }: Props) {
   const [token, setToken] = useState("");
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  });
 
   const login = useGoogleLogin({
     scope:
@@ -117,7 +120,22 @@ export default function Layout({ children }: Props) {
                             Sign in with Google 🚀
                           </button>
                         ))}
-                      <ConnectButton />
+                      {!isConnected ? (
+                        <button
+                          type="button"
+                          className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          onClick={() => connect()}
+                        >
+                          Connect Wallet
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                          {address}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

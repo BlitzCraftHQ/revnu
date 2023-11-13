@@ -1,7 +1,11 @@
 import Image from "next/image";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useConnect } from "wagmi";
+import { InjectedConnector } from "wagmi/connectors/injected";
 
 export default function Hero() {
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  });
   return (
     <>
       <div
@@ -57,7 +61,13 @@ export default function Hero() {
                 the future of content engagement.
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
-                <ConnectButton />
+                <button
+                  type="button"
+                  className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  onClick={() => connect()}
+                >
+                  Connect Wallet
+                </button>
                 <a
                   href="#"
                   className="text-sm font-semibold leading-6 text-white"
