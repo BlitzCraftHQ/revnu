@@ -5,10 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import {
   Bars3Icon,
-  Battery100Icon,
   BellIcon,
   CursorArrowRippleIcon,
-  DocumentTextIcon,
   HomeIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
@@ -30,21 +28,6 @@ const navigation = [
     href: "/bounties",
     icon: HomeIcon,
   },
-  // {
-  //   name: "Stake",
-  //   href: "/stake",
-  //   icon: CursorArrowRippleIcon,
-  // },
-  // {
-  //   name: "Top-Up Wallet",
-  //   href: "/top-up",
-  //   icon: CreditCardIcon,
-  // },
-  // {
-  //   name: "Withdraw Earnings",
-  //   href: "/withdraw",
-  //   icon: BanknotesIcon,
-  // },
 ];
 
 const user = {

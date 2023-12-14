@@ -8,9 +8,6 @@ import "solidity-coverage"
 import "hardhat-deploy"
 import { HardhatUserConfig } from "hardhat/config"
 
-const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || ""
-// const SEPOLIA_RPC_URL =
-//   process.env.SEPOLIA_RPC_URL || "https://eth-sepolia.g.alchemy.com/v2/YOUR-API-KEY"
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "privateKey"
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || ""
 
@@ -45,18 +42,6 @@ const config: HardhatUserConfig = {
       url: "https://rpc.pego.io/",
       accounts: [PRIVATE_KEY],
       chainId: 20201022,
-      allowUnlimitedContractSize: true,
-    },
-    celoMainNet: {
-      url: "https://forno.celo.org",
-      accounts: [PRIVATE_KEY],
-      chainId: 42220,
-      allowUnlimitedContractSize: true,
-    },
-    celoAlfajores: {
-      url: "https://alfajores-forno.celo-testnet.org",
-      accounts: [PRIVATE_KEY],
-      chainId: 44787,
       allowUnlimitedContractSize: true,
     },
     // Network name: PEGO Mainnet Chain ID: 20201022 Currency Symbol: PG RPC node: pegorpc.com node1.pegorpc.com node2.pegorpc.com node3.pegorpc.com
