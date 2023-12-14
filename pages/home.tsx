@@ -5,7 +5,6 @@ import { useAccount, useContractRead, useContractWrite } from "wagmi";
 import DEPLOYED_CONTRACTS from "@/utilities/contractDetails";
 import numeral from "numeral";
 import ApplicationLayout from "@/components/Utilities/ApplicationLayout";
-import "mapbox-gl/dist/mapbox-gl.css";
 import Link from "next/link";
 import { formatEther } from "viem";
 
